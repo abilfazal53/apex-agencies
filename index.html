@@ -209,6 +209,133 @@ tbody td{padding:12px 16px;color:var(--text-primary);vertical-align:middle}
   .pp-note{text-align:center;font-size:7pt;color:#94a3b8;margin-top:5pt;padding-top:5pt;border-top:.5pt solid #e2e8f0}
 }
 #print-area{display:none}
+
+/* ═══════════════════════════════════════
+   MOBILE RESPONSIVE
+═══════════════════════════════════════ */
+
+/* Hamburger button - hidden on desktop */
+#mob-menu-btn{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--deep-blue);color:#fff;border:none;border-radius:8px;width:40px;height:40px;font-size:20px;cursor:pointer;align-items:center;justify-content:center;box-shadow:var(--shadow-lg)}
+
+/* Sidebar overlay backdrop */
+#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;backdrop-filter:blur(2px)}
+#mob-overlay.open{display:block}
+
+@media(max-width:768px){
+  /* Show hamburger */
+  #mob-menu-btn{display:flex}
+
+  /* Sidebar slides in from left, hidden by default */
+  #sidebar{transform:translateX(-100%);transition:transform .25s ease;z-index:150}
+  #sidebar.open{transform:translateX(0)}
+
+  /* Main takes full width */
+  #main{margin-left:0}
+
+  /* Topbar adjustments */
+  #topbar{padding:0 16px 0 64px;height:56px}
+  .page-title{font-size:17px}
+  .cloud-badge{display:none}
+  .topbar-date{font-size:11px;padding:4px 10px}
+
+  /* Content padding */
+  #content{padding:16px}
+
+  /* Stats — 2 columns on mobile */
+  .stats-grid{grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .stat-value{font-size:20px}
+  .stat-label{font-size:10px}
+
+  /* Two-col → single col on mobile */
+  .two-col{grid-template-columns:1fr}
+
+  /* Cards */
+  .card-header{padding:14px 16px 12px}
+  .card-body{padding:14px 16px}
+  .card-title{font-size:14px}
+
+  /* Billing layout — stack vertically */
+  #view-billing .two-col{grid-template-columns:1fr}
+
+  /* Bill summary sticky panel */
+  #view-billing .two-col > div:last-child{position:static}
+
+  /* Bill items table — make scrollable */
+  #bit{font-size:12px}
+  #bit th,#bit td{padding:6px 8px}
+  #bit td input{width:56px}
+
+  /* History items */
+  .hist-main{flex-direction:column;align-items:flex-start;gap:10px;padding:12px 16px}
+  .hist-main > div:last-child{width:100%;justify-content:space-between}
+  .hist-main > div:last-child > div{flex:1}
+
+  /* Recent items */
+  .recent-item{padding:10px 16px}
+
+  /* Search wrap full width */
+  .search-wrap{max-width:100%;flex:1}
+
+  /* Flex row wrapping */
+  .flex-row{gap:8px}
+  .ml-auto{margin-left:0}
+
+  /* Billing add items row — stack */
+  #view-billing .flex-row{flex-direction:column;align-items:stretch}
+  #view-billing .flex-row .form-group{width:100%!important;margin-bottom:8px}
+  #view-billing .flex-row button{width:100%}
+
+  /* Customer detail panel — full width */
+  #cust-detail{display:none}
+  #cust-detail.mob-show{display:block!important}
+
+  /* Modal full screen on mobile */
+  .modal{width:100%!important;max-width:100%!important;max-height:95vh;border-radius:16px 16px 0 0;position:fixed;bottom:0;left:0;right:0;margin:0;animation:slideUp .25s ease}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-overlay{align-items:flex-end}
+
+  /* Edit bill modal items */
+  .ebi-row{flex-wrap:wrap;gap:6px}
+  .ebi-name{width:100%;margin-bottom:2px}
+
+  /* Customer cards */
+  .cust-row{padding:12px 14px}
+
+  /* Low stock items */
+  .low-stock-item{padding:9px 0}
+
+  /* Tables in stock manager */
+  #stock-tbody td,#stock-tbody th{font-size:12px;padding:8px 10px}
+
+  /* Bill totals */
+  .btr.grand{font-size:17px}
+
+  /* Buttons smaller */
+  .btn-lg{padding:11px 20px;font-size:14px}
+
+  /* History count hide on small */
+  #hist-count{display:none}
+
+  /* A4 preview */
+  .a4-scroll{padding:12px}
+  .a4-paper{padding:20px 18px 18px}
+  .a4-coname{font-size:17px}
+  .a4-invtitle{font-size:22px}
+  .a4-two{grid-template-columns:1fr}
+  .a4-bottom{flex-direction:column}
+  .a4-totals{min-width:unset;width:100%}
+
+  /* Loading screen */
+  .loading-logo{font-size:26px}
+}
+
+@media(max-width:420px){
+  .stats-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-value{font-size:18px}
+  #content{padding:12px}
+  .hist-main > div:last-child{flex-wrap:wrap;gap:6px}
+  .hist-main > div:last-child button{font-size:11px;padding:5px 9px}
+}
 </style>
 </head>
 <body>
@@ -219,6 +346,10 @@ tbody td{padding:12px 16px;color:var(--text-primary);vertical-align:middle}
   <div class="loading-spinner"></div>
   <div class="loading-status" id="loading-status">Connecting to Firebase…</div>
 </div>
+
+<!-- Mobile menu -->
+<button id="mob-menu-btn" onclick="toggleSidebar()">☰</button>
+<div id="mob-overlay" onclick="closeSidebar()"></div>
 
 <aside id="sidebar">
   <div class="sidebar-brand">
@@ -618,6 +749,7 @@ async function nav(p){
   document.getElementById('view-'+p).classList.add('active');
   document.getElementById('nav-'+p).classList.add('active');
   document.getElementById('topbar-title').textContent=TITLES[p];
+  closeSidebar();
   if(p==='dashboard'){ await loadAll(); refreshDash(); }
   if(p==='stock'){ cacheItems=await dbRead('items'); renderStock(); }
   if(p==='history'){ cacheBills=await dbRead('bills'); cacheBills.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)); renderHistory(); }
@@ -1101,6 +1233,19 @@ function n2w(n){
   function c(n){if(!n)return'';if(n<20)return ones[n]+' ';if(n<100)return tens[Math.floor(n/10)]+' '+(n%10?ones[n%10]+' ':'');if(n<1000)return ones[Math.floor(n/100)]+' Hundred '+(n%100?c(n%100):'');if(n<100000)return c(Math.floor(n/1000))+'Thousand '+(n%1000?c(n%1000):'');if(n<10000000)return c(Math.floor(n/100000))+'Lakh '+(n%100000?c(n%100000):'');return c(Math.floor(n/10000000))+'Crore '+(n%10000000?c(n%10000000):'');}
   const ip=Math.floor(n),dp=Math.round((n-ip)*100);
   return c(ip).trim()+' Rupees'+(dp?' and '+c(dp).trim()+' Paise':'')+' Only';
+}
+
+
+// ═══════════════════════════════════════════
+// MOBILE SIDEBAR
+// ═══════════════════════════════════════════
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('mob-overlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mob-overlay').classList.remove('open');
 }
 
 // ═══════════════════════════════════════════
