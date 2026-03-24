@@ -2,403 +2,365 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Apex Agencies</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
-/* ── TOKENS ── */
 :root{
-  --db:#0f1f3d; --db2:#162a52; --acc:#2d5be3; --acc2:#1f4fd4;
-  --slate:#64748b; --sl:#94a3b8; --bg:#f1f5f9; --line:#e2e8f0;
-  --white:#fff; --green:#10b981; --amber:#f59e0b; --red:#ef4444;
-  --tp:#0f172a; --ts:#475569;
-  --r:14px; --r-sm:10px;
+  --db:#0f1f3d;--db2:#162a52;--acc:#2d5be3;--acc2:#1f4fd4;
+  --sl:#64748b;--sll:#94a3b8;--bg:#f1f5f9;--line:#e2e8f0;
+  --white:#fff;--green:#10b981;--amber:#f59e0b;--red:#ef4444;
+  --tp:#0f172a;--ts:#475569;
+  --r:14px;--r-sm:10px;
   --sh:0 2px 8px rgba(15,31,61,.08);
   --sh-lg:0 12px 40px rgba(15,31,61,.16);
-  --nav-h:68px;
-  --top-h:58px;
+  --nav-h:64px;--top-h:56px;--sidebar-w:240px;
 }
-
-/* ── RESET ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tp);-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tp);height:100%;overflow:hidden;-webkit-tap-highlight-color:transparent}
 
-/* ── LAYOUT ── */
-#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+/* ══ LAYOUT ══ */
+#app{display:flex;height:100vh;height:100dvh;overflow:hidden}
 
-/* ── TOP BAR ── */
-#topbar{
-  height:var(--top-h);
-  background:var(--db);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 18px;
-  flex-shrink:0;
-  position:relative;
-  z-index:10;
+/* ══ DESKTOP SIDEBAR ══ */
+#sidebar{
+  width:var(--sidebar-w);background:var(--db);
+  display:flex;flex-direction:column;flex-shrink:0;
+  height:100%;overflow-y:auto;
+  box-shadow:4px 0 20px rgba(15,31,61,.15);
+  transition:transform .25s ease;
 }
-.tb-brand{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff}
-.tb-page{font-size:15px;font-weight:600;color:#fff;display:none}
-.tb-right{display:flex;align-items:center;gap:8px}
-.sync-pill{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:20px;font-size:11px;color:rgba(255,255,255,.7)}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0}
+.sb-brand{padding:26px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#fff;line-height:1.2}
+.sb-sub{font-size:10px;color:var(--sll);letter-spacing:1.8px;text-transform:uppercase;margin-top:3px}
+.sb-sync{margin-top:10px;font-size:11px;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:5px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;transition:background .3s}
 .sync-dot.live{background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 0 4px rgba(16,185,129,0)}}
-.tb-date{font-size:11px;color:rgba(255,255,255,.5)}
+.sb-nav{flex:1;padding:14px 10px;overflow-y:auto}
+.sb-lbl{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);padding:0 10px;margin:14px 0 5px}
+.sb-link{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border-radius:8px;color:rgba(255,255,255,.65);font-size:13.5px;font-weight:500;
+  cursor:pointer;margin-bottom:2px;transition:all .15s;user-select:none;
+}
+.sb-link:hover{background:rgba(255,255,255,.08);color:#fff}
+.sb-link.active{background:var(--acc);color:#fff;box-shadow:0 3px 10px rgba(45,91,227,.4)}
+.sb-icon{font-size:17px;width:20px;text-align:center}
+.sb-footer{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.2);text-align:center}
 
-/* ── SCROLL AREA ── */
-#pages{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + 12px)}
+/* ══ MAIN COLUMN ══ */
+#main{flex:1;display:flex;flex-direction:column;min-width:0;height:100%;overflow:hidden}
 
-/* ── BOTTOM NAV ── */
+/* ══ TOP BAR ══ */
+#topbar{
+  height:var(--top-h);background:var(--db);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;flex-shrink:0;z-index:20;
+  padding-top:env(safe-area-inset-top);
+}
+#mob-menu-btn{
+  display:none;background:none;border:none;cursor:pointer;
+  padding:6px;flex-direction:column;gap:5px;flex-shrink:0;
+}
+.hline{width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s;display:block}
+#mob-menu-btn.open .hline:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#mob-menu-btn.open .hline:nth-child(2){opacity:0;transform:scaleX(0)}
+#mob-menu-btn.open .hline:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.tb-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;flex:1;margin:0 12px}
+.tb-right{display:flex;align-items:center;gap:8px}
+.tb-refresh{
+  background:rgba(255,255,255,.1);border:none;color:#fff;
+  width:34px;height:34px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  transition:all .2s;flex-shrink:0;
+}
+.tb-refresh:hover{background:rgba(255,255,255,.2)}
+.tb-refresh.spinning{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tb-sync{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:20px;font-size:11px;color:rgba(255,255,255,.8)}
+.tb-date{font-size:11px;color:rgba(255,255,255,.4)}
+
+/* ══ OFFLINE BANNER ══ */
+#offline-banner{
+  background:#f59e0b;color:#fff;text-align:center;
+  padding:8px 16px;font-size:13px;font-weight:600;
+  display:none;flex-shrink:0;align-items:center;justify-content:center;gap:8px;
+  z-index:15;
+}
+#offline-banner.show{display:flex}
+
+/* ══ PAGES CONTAINER ══ */
+#pages{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));
+  scroll-behavior:smooth;
+}
+
+/* ══ BOTTOM NAV ══ */
 #bottom-nav{
-  height:var(--nav-h);
-  background:var(--white);
+  position:fixed;bottom:0;left:0;right:0;
+  height:var(--nav-h);background:var(--white);
   border-top:1px solid var(--line);
-  display:flex;
-  align-items:stretch;
-  flex-shrink:0;
-  position:relative;
-  z-index:10;
-  box-shadow:0 -4px 20px rgba(15,31,61,.08);
+  display:none;align-items:center;
+  box-shadow:0 -4px 20px rgba(15,31,61,.1);
+  z-index:100;
+  padding-bottom:env(safe-area-inset-bottom);
 }
 .bn-item{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;cursor:pointer;border:none;background:none;
-  color:var(--sl);font-size:10px;font-weight:600;letter-spacing:.3px;
-  text-transform:uppercase;padding:8px 4px;transition:color .15s;
-  font-family:'DM Sans',sans-serif;
-  -webkit-tap-highlight-color:transparent;
+  gap:3px;cursor:pointer;border:none;background:none;color:var(--sll);
+  font-size:9.5px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;
+  padding:8px 2px;font-family:'DM Sans',sans-serif;
+  -webkit-tap-highlight-color:transparent;transition:color .15s;
 }
-.bn-icon{font-size:22px;line-height:1;transition:transform .15s}
+.bn-icon{font-size:21px;line-height:1;transition:transform .15s}
 .bn-item.active{color:var(--acc)}
-.bn-item.active .bn-icon{transform:scale(1.15)}
+.bn-item.active .bn-icon{transform:scale(1.1)}
 .bn-fab{
-  width:52px;height:52px;border-radius:50%;
+  width:50px;height:50px;border-radius:50%;
   background:linear-gradient(135deg,var(--acc),var(--acc2));
   color:#fff;border:none;display:flex;align-items:center;justify-content:center;
-  font-size:26px;cursor:pointer;margin-top:-20px;
+  font-size:26px;cursor:pointer;margin-top:-18px;flex-shrink:0;
   box-shadow:0 4px 16px rgba(45,91,227,.45);
-  flex-shrink:0;transition:transform .15s,box-shadow .15s;
   -webkit-tap-highlight-color:transparent;
+  transition:transform .15s,box-shadow .15s;
 }
-.bn-fab:active{transform:scale(.94);box-shadow:0 2px 8px rgba(45,91,227,.4)}
+.bn-fab:active{transform:scale(.93);box-shadow:0 2px 8px rgba(45,91,227,.35)}
 
-/* ── PAGE ── */
-.page{display:none;padding:16px;animation:fadeIn .2s ease}
+/* ══ MOBILE SIDEBAR OVERLAY ══ */
+#mob-overlay{
+  position:fixed;inset:0;background:rgba(15,31,61,.5);
+  backdrop-filter:blur(3px);z-index:200;display:none;
+}
+#mob-overlay.open{display:block}
+#mob-sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);
+  background:var(--db);z-index:201;display:flex;flex-direction:column;
+  transform:translateX(-100%);transition:transform .25s ease;
+  box-shadow:4px 0 30px rgba(15,31,61,.3);overflow-y:auto;
+}
+#mob-sidebar.open{transform:translateX(0)}
+
+/* ══ PAGE ══ */
+.page{display:none;padding:18px;animation:fadeUp .2s ease}
 .page.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── SECTION HEADER ── */
-.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.sec-title{font-size:17px;font-weight:700;color:var(--tp)}
-.sec-sub{font-size:12px;color:var(--slate);margin-top:1px}
+/* ══ SECTION HEADER ══ */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sec-title{font-size:18px;font-weight:700;color:var(--tp)}
+.sec-sub{font-size:12px;color:var(--sl);margin-top:2px}
 
-/* ── STAT CARDS ── */
-.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
-.stat-card{
-  background:var(--white);border-radius:var(--r);padding:16px;
-  box-shadow:var(--sh);position:relative;overflow:hidden;
-}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
-.sc-blue::before{background:var(--acc)}.sc-green::before{background:var(--green)}
-.sc-amber::before{background:var(--amber)}.sc-red::before{background:var(--red)}
-.sc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--slate);margin-bottom:8px}
-.sc-value{font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:var(--tp);line-height:1}
-.sc-sub{font-size:11px;color:var(--sl);margin-top:4px}
-.sc-icon{position:absolute;right:12px;bottom:10px;font-size:28px;opacity:.07}
+/* ══ STAT CARDS ══ */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.stat-card{background:var(--white);border-radius:var(--r);padding:16px;position:relative;overflow:hidden;box-shadow:var(--sh)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.sc-b::before{background:var(--acc)}.sc-g::before{background:var(--green)}
+.sc-a::before{background:var(--amber)}.sc-r::before{background:var(--red)}
+.sc-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sl);margin-bottom:7px}
+.sc-val{font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:var(--tp);line-height:1}
+.sc-sub{font-size:10px;color:var(--sll);margin-top:4px}
+.sc-ico{position:absolute;right:10px;bottom:8px;font-size:28px;opacity:.07}
 
-/* ── CARD ── */
+/* ══ CARD ══ */
 .card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
-.card-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid var(--line)}
-.card-title{font-size:14px;font-weight:700;color:var(--tp)}
+.card-hd{display:flex;align-items:center;justify-content:space-between;padding:13px 16px 11px;border-bottom:1px solid var(--line)}
+.card-title{font-size:13.5px;font-weight:700;color:var(--tp)}
 .card-body{padding:14px 16px}
 
-/* ── LIST ITEMS ── */
-.list-item{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:13px 16px;border-bottom:1px solid var(--line);
-  transition:background .12s;
-}
-.list-item:last-child{border-bottom:none}
-.list-item:active{background:#f8fafc}
-.li-left{flex:1;min-width:0}
-.li-title{font-size:14px;font-weight:600;color:var(--tp);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.li-sub{font-size:12px;color:var(--slate);margin-top:2px}
-.li-right{text-align:right;flex-shrink:0;margin-left:12px}
-.li-amount{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--acc)}
-.li-tag{font-size:11px;color:var(--slate);margin-top:2px}
+/* ══ CHART ══ */
+#rev-chart{width:100%;height:110px;display:flex;align-items:flex-end;gap:4px;padding:0 4px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.chart-bar{width:100%;background:var(--acc);border-radius:4px 4px 0 0;min-height:4px;transition:height .4s ease;opacity:.85}
+.chart-bar.today{background:var(--green);opacity:1}
+.chart-day{font-size:9px;color:var(--sl);font-weight:600}
+.chart-val{font-size:8.5px;color:var(--sl);font-family:'DM Mono',monospace}
 
-/* ── BADGES ── */
-.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+/* ══ LIST ITEMS ══ */
+.list-item{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--line)}
+.list-item:last-child{border-bottom:none}
+.li-title{font-size:13.5px;font-weight:600;color:var(--tp)}
+.li-sub{font-size:11px;color:var(--sl);margin-top:2px}
+.li-amount{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:var(--acc)}
+.li-tag{font-size:10px;color:var(--sl);text-align:right;margin-top:2px}
+
+/* ══ BADGES ══ */
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:600;white-space:nowrap}
 .bg-green{background:#dcfce7;color:#166534}.bg-amber{background:#fef3c7;color:#92400e}
 .bg-red{background:#fee2e2;color:#991b1b}.bg-blue{background:#dbeafe;color:#1e40af}
-.bg-purple{background:#f3e8ff;color:#6b21a8}
+.bg-purple{background:#f3e8ff;color:#6b21a8}.bg-slate{background:#f1f5f9;color:#475569}
+/* Status badges */
+.badge-paid{background:#dcfce7;color:#166534}
+.badge-pending{background:#fef3c7;color:#92400e}
+.badge-cancelled{background:#fee2e2;color:#991b1b}
 
-/* ── BUTTONS ── */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  padding:11px 20px;border-radius:var(--r-sm);
-  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
-  cursor:pointer;border:none;transition:all .15s;
-  -webkit-tap-highlight-color:transparent;
-}
+/* ══ BUTTONS ══ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;border:none;transition:all .15s;-webkit-tap-highlight-color:transparent}
 .btn:active{transform:scale(.97)}
 .btn-primary{background:var(--acc);color:#fff;box-shadow:0 2px 8px rgba(45,91,227,.3)}
 .btn-success{background:var(--green);color:#fff;box-shadow:0 2px 8px rgba(16,185,129,.3)}
 .btn-danger{background:var(--red);color:#fff}
 .btn-warning{background:var(--amber);color:#fff}
 .btn-ghost{background:transparent;color:var(--ts);border:1.5px solid var(--line)}
-.btn-full{width:100%;padding:14px}
-.btn-sm{padding:7px 13px;font-size:12px;border-radius:8px}
-.btn-icon{width:36px;height:36px;padding:0;border-radius:8px;font-size:16px}
+.btn-full{width:100%;padding:13px}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:7px}
+.btn-icon{width:34px;height:34px;padding:0;border-radius:8px;font-size:15px;flex-shrink:0}
 
-/* ── FORMS ── */
-.form-group{margin-bottom:14px}
-.form-label{display:block;font-size:12px;font-weight:600;color:var(--ts);margin-bottom:6px;letter-spacing:.3px}
-.form-control{
-  width:100%;padding:12px 14px;
-  border:1.5px solid var(--line);border-radius:var(--r-sm);
-  font-family:'DM Sans',sans-serif;font-size:15px;color:var(--tp);
-  background:var(--white);outline:none;
-  transition:border-color .15s,box-shadow .15s;
-  -webkit-appearance:none;appearance:none;
-}
+/* ══ FORMS ══ */
+.form-group{margin-bottom:13px}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--ts);margin-bottom:5px;letter-spacing:.3px;text-transform:uppercase}
+.form-control{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--tp);background:var(--white);outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none}
 .form-control:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(45,91,227,.1)}
-select.form-control{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
-textarea.form-control{resize:vertical;min-height:80px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+select.form-control{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+textarea.form-control{resize:vertical;min-height:72px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* ── AUTOCOMPLETE ── */
+/* ══ AUTOCOMPLETE ══ */
 .ac-wrap{position:relative}
-.ac-list{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--acc);border-radius:var(--r-sm);box-shadow:var(--sh-lg);z-index:300;max-height:200px;overflow-y:auto;display:none}
+.ac-list{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--acc);border-radius:var(--r-sm);box-shadow:var(--sh-lg);z-index:300;max-height:210px;overflow-y:auto;display:none}
 .ac-list.open{display:block}
-.ac-item{padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .1s}
+.ac-item{padding:11px 13px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .1s}
 .ac-item:last-child{border-bottom:none}
 .ac-item:active,.ac-item.hi{background:#eff6ff}
-.ac-name{font-weight:600;font-size:14px;color:var(--tp)}
-.ac-sub{font-size:12px;color:var(--slate);margin-top:2px}
+.ac-name{font-weight:600;font-size:13.5px;color:var(--tp)}
+.ac-sub{font-size:11px;color:var(--sl);margin-top:2px}
+.ac-name mark{background:#fef08a;color:var(--tp);border-radius:2px;padding:0 1px}
 
-/* ── BILL ITEMS (card style) ── */
-.bill-item-card{
-  background:var(--bg);border-radius:var(--r-sm);padding:12px 14px;
-  margin-bottom:10px;position:relative;
-}
-.bic-name{font-size:14px;font-weight:600;color:var(--tp);margin-bottom:8px;padding-right:28px}
-.bic-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.bic-price{font-size:13px;color:var(--slate)}
-.bic-total{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:var(--acc);margin-left:auto}
-.qty-ctrl{display:flex;align-items:center;gap:0;border:1.5px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
-.qty-btn{width:34px;height:34px;border:none;background:none;font-size:18px;cursor:pointer;color:var(--acc);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
-.qty-btn:active{background:var(--bg)}
-.qty-val{width:38px;text-align:center;font-family:'DM Mono',monospace;font-size:14px;font-weight:600;border:none;outline:none;background:none}
-.bic-del{position:absolute;top:10px;right:10px;background:none;border:none;font-size:16px;color:var(--red);cursor:pointer;padding:4px}
+/* ══ SEARCH ══ */
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--white);border-radius:var(--r-sm);padding:10px 13px;box-shadow:var(--sh);margin-bottom:12px;border:1.5px solid var(--line);transition:border-color .15s}
+.search-bar:focus-within{border-color:var(--acc)}
+.search-bar input{flex:1;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--tp);background:none}
+.search-ico{font-size:15px;color:var(--sll);flex-shrink:0}
+.search-bar input::placeholder{color:var(--sll)}
+mark{background:#fef08a;color:inherit;border-radius:2px;padding:0 1px}
 
-/* ── BILL TOTALS CARD ── */
-.totals-card{
-  background:linear-gradient(135deg,var(--db),var(--db2));
-  border-radius:var(--r);padding:18px;color:#fff;margin-bottom:14px;
-}
-.tc-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
-.tc-grand{
-  display:flex;justify-content:space-between;align-items:center;
-  padding-top:12px;margin-top:10px;border-top:1px solid rgba(255,255,255,.2);
-  font-size:20px;font-weight:700;color:#fff;
-  font-family:'DM Mono',monospace;
-}
+/* ══ BILL ITEMS ══ */
+.bill-item-card{background:var(--bg);border-radius:10px;padding:11px 13px;margin-bottom:8px;position:relative;border:1px solid var(--line)}
+.bic-name{font-size:13px;font-weight:600;color:var(--tp);margin-bottom:7px;padding-right:24px}
+.bic-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bic-price{font-size:12px;color:var(--sl)}
+.qty-ctrl{display:flex;align-items:center;background:var(--white);border:1.5px solid var(--line);border-radius:7px;overflow:hidden}
+.qty-btn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--acc);background:none;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.qty-val{width:34px;text-align:center;font-size:13px;font-weight:700;font-family:'DM Mono',monospace;background:none;border:none;outline:none;color:var(--tp)}
+.bic-total{font-size:13.5px;font-weight:700;color:var(--acc);font-family:'DM Mono',monospace;margin-left:auto}
+.bic-del{position:absolute;top:9px;right:9px;color:var(--red);font-size:13px;background:none;border:none;cursor:pointer;line-height:1;padding:2px}
 
-/* ── CUSTOMER AVATAR CARD ── */
-.cust-card{
-  display:flex;align-items:center;gap:14px;
-  padding:14px 16px;border-bottom:1px solid var(--line);
-  cursor:pointer;transition:background .12s;
-  -webkit-tap-highlight-color:transparent;
-}
+/* ══ TOTALS CARD ══ */
+.totals-card{background:linear-gradient(135deg,var(--db),var(--db2));border-radius:var(--r);padding:18px;color:#fff;margin-bottom:12px}
+.tc-row{display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.65);padding:3px 0}
+.tc-grand{display:flex;justify-content:space-between;font-size:19px;font-weight:700;color:#fff;border-top:1px solid rgba(255,255,255,.18);margin-top:9px;padding-top:10px;font-family:'DM Mono',monospace}
+
+/* ══ CUSTOMERS ══ */
+.cust-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .1s}
 .cust-card:last-child{border-bottom:none}
 .cust-card:active{background:var(--bg)}
 .cust-card.selected{background:#eff6ff}
-.cust-av{
-  width:42px;height:42px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,var(--acc),#7c3aed);
-  color:#fff;display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:17px;
-}
-.cust-info{flex:1;min-width:0}
-.cust-name{font-size:14px;font-weight:600;color:var(--tp)}
-.cust-sub{font-size:12px;color:var(--slate);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cust-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--acc),#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0}
+.cust-name{font-size:13.5px;font-weight:600;color:var(--tp)}
+.cust-sub{font-size:11px;color:var(--sl);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* ── STOCK ROW ── */
-.stock-item{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 16px;border-bottom:1px solid var(--line);
-}
+/* ══ STOCK ══ */
+.stock-item{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--line)}
 .stock-item:last-child{border-bottom:none}
-.si-icon{width:40px;height:40px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-ico{width:38px;height:38px;background:var(--bg);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
 .si-info{flex:1;min-width:0}
 .si-name{font-size:13px;font-weight:600;color:var(--tp);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.si-cat{font-size:11px;color:var(--slate);margin-top:1px}
+.si-cat{font-size:10.5px;color:var(--sl);margin-top:1px}
 .si-right{text-align:right;flex-shrink:0}
 .si-price{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--tp)}
-.si-stock{font-size:11px;margin-top:3px}
-.si-actions{display:flex;gap:6px;margin-top:6px;justify-content:flex-end}
+.si-actions{display:flex;gap:5px;margin-top:5px;justify-content:flex-end;align-items:center}
+.qty-input{width:52px;padding:4px 6px;border:1.5px solid var(--line);border-radius:6px;font-size:12px;text-align:center;font-family:'DM Mono',monospace;outline:none;background:var(--white)}
+.qty-input:focus{border-color:var(--acc)}
 
-/* ── HISTORY ITEM ── */
-.hist-card{
-  padding:14px 16px;border-bottom:1px solid var(--line);
-  transition:background .12s;
+/* ══ HISTORY (with swipe) ══ */
+.hist-wrap{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hist-wrap:last-child{border-bottom:none}
+.hist-delete-bg{
+  position:absolute;right:0;top:0;bottom:0;width:80px;
+  background:var(--red);display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:13px;font-weight:600;flex-direction:column;gap:2px;
+  border-radius:0;
 }
-.hist-card:last-child{border-bottom:none}
-.hist-card:active{background:var(--bg)}
-.hc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.hist-delete-bg span{font-size:18px}
+.hist-card{
+  padding:13px 14px;background:var(--white);
+  position:relative;cursor:default;
+  transition:transform .25s ease;touch-action:pan-y;
+  user-select:none;
+}
+.hc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.hc-left{flex:1;min-width:0}
 .hc-name{font-size:14px;font-weight:700;color:var(--tp)}
-.hc-inv{font-size:11px;color:var(--slate);margin-top:2px}
-.hc-amount{font-family:'DM Mono',monospace;font-size:16px;font-weight:700;color:var(--acc)}
-.hc-gst{font-size:11px;color:var(--slate);margin-top:2px;text-align:right}
-.hc-bottom{display:flex;align-items:center;justify-content:space-between}
-.hc-meta{font-size:12px;color:var(--slate)}
-.hc-actions{display:flex;gap:6px}
+.hc-inv{font-size:11px;color:var(--sl);margin-top:2px}
+.hc-right{text-align:right;flex-shrink:0;margin-left:10px}
+.hc-amount{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--acc)}
+.hc-gst{font-size:10px;color:var(--sl);margin-top:2px}
+.hc-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.hc-meta{font-size:11.5px;color:var(--sl)}
+.hc-actions{display:flex;gap:6px;align-items:center}
 
-/* ── EMPTY STATE ── */
-.empty{text-align:center;padding:40px 20px;color:var(--slate)}
-.empty-icon{font-size:44px;margin-bottom:10px;opacity:.4}
-.empty p{font-size:14px}
+/* Status selector */
+.status-select{
+  font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;border:none;cursor:pointer;
+  -webkit-appearance:none;appearance:none;outline:none;font-family:'DM Sans',sans-serif;
+}
+.status-paid{background:#dcfce7;color:#166534}
+.status-pending{background:#fef3c7;color:#92400e}
+.status-cancelled{background:#fee2e2;color:#991b1b}
 
-/* ── LOW STOCK ── */
-.ls-item{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--line)}
+/* ══ LOW STOCK ══ */
+.ls-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line)}
 .ls-item:last-child{border-bottom:none}
 
-/* ── SEARCH BAR ── */
-.search-bar{
-  display:flex;align-items:center;gap:10px;
-  background:var(--white);border-radius:var(--r-sm);
-  padding:10px 14px;box-shadow:var(--sh);margin-bottom:14px;
-  border:1.5px solid var(--line);
-}
-.search-bar:focus-within{border-color:var(--acc)}
-.search-bar input{flex:1;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--tp);background:none}
-.search-icon{font-size:16px;color:var(--sl);flex-shrink:0}
+/* ══ EMPTY ══ */
+.empty{text-align:center;padding:40px 20px;color:var(--sl)}
+.empty-ico{font-size:44px;margin-bottom:10px;opacity:.4}
+.empty p{font-size:13.5px}
 
-/* ── FAB ADD BUTTON ── */
-.page-fab{
-  position:fixed;right:20px;bottom:calc(var(--nav-h) + 16px);
-  width:52px;height:52px;border-radius:50%;
-  background:var(--acc);color:#fff;border:none;
-  font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 16px rgba(45,91,227,.45);z-index:50;
-  -webkit-tap-highlight-color:transparent;transition:transform .15s;
-}
-.page-fab:active{transform:scale(.92)}
-
-/* ── MODAL ── */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(15,31,61,.5);
-  backdrop-filter:blur(3px);z-index:999;
-  display:none;align-items:flex-end;justify-content:center;
-}
+/* ══ MODAL ══ */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,31,61,.5);backdrop-filter:blur(3px);z-index:500;display:none;align-items:flex-end;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal{
-  background:var(--white);width:100%;max-width:520px;
-  border-radius:20px 20px 0 0;
-  max-height:92vh;overflow-y:auto;
-  animation:slideUp .25s ease;
-  padding-bottom:env(safe-area-inset-bottom);
-}
+.modal{background:var(--white);width:100%;max-width:540px;border-radius:20px 20px 0 0;max-height:92vh;overflow-y:auto;animation:slideUp .25s ease;padding-bottom:env(safe-area-inset-bottom)}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-handle{width:40px;height:4px;background:var(--line);border-radius:2px;margin:12px auto 0}
-.modal-hd{padding:16px 20px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.modal-handle{width:38px;height:4px;background:var(--line);border-radius:2px;margin:12px auto 0}
+.modal-hd{padding:15px 20px 13px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:10}
 .modal-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--db)}
-.modal-close{background:var(--bg);border:none;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--slate)}
+.modal-close{background:var(--bg);border:none;width:30px;height:30px;border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sl)}
 .modal-body{padding:16px 20px}
-.modal-footer{padding:12px 20px 20px;display:flex;gap:10px;border-top:1px solid var(--line);background:var(--white);position:sticky;bottom:0}
+.modal-footer{padding:12px 20px 16px;display:flex;gap:10px;border-top:1px solid var(--line);position:sticky;bottom:0;background:#fff}
 .modal-footer .btn{flex:1}
 
-/* ── DESKTOP OVERRIDES (≥ 768px) ── */
-@media(min-width:768px){
-  #app{flex-direction:row}
-  #bottom-nav{display:none}
-
-  /* Desktop sidebar */
-  #desktop-sidebar{
-    width:220px;flex-shrink:0;background:var(--db);
-    display:flex!important;flex-direction:column;
-    height:100vh;position:sticky;top:0;
-    box-shadow:4px 0 20px rgba(15,31,61,.15);
-  }
-  .ds-brand{padding:26px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
-  .ds-brand-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#fff}
-  .ds-brand-sub{font-size:10px;color:var(--sl);letter-spacing:1.8px;text-transform:uppercase;margin-top:3px}
-  .ds-sync{margin-top:10px;font-size:11px;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:5px}
-  .ds-nav{flex:1;padding:14px 10px}
-  .ds-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);padding:0 10px;margin:14px 0 5px}
-  .ds-link{
-    display:flex;align-items:center;gap:10px;padding:10px 12px;
-    border-radius:8px;color:rgba(255,255,255,.65);font-size:13px;font-weight:500;
-    cursor:pointer;margin-bottom:2px;transition:all .15s;
-  }
-  .ds-link:hover{background:rgba(255,255,255,.08);color:#fff}
-  .ds-link.active{background:var(--acc);color:#fff;box-shadow:0 3px 10px rgba(45,91,227,.4)}
-  .ds-icon{font-size:17px;width:20px;text-align:center}
-  .ds-footer{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.2);text-align:center}
-
-  #topbar{display:none}
-  .tb-page{display:block}
-
-  #pages{height:100vh;overflow-y:auto}
-  .page{padding:28px 32px;max-width:960px}
-  .page-fab{right:32px;bottom:32px}
-
-  /* Desktop grid layouts */
-  .stats-row{grid-template-columns:repeat(4,1fr);gap:16px}
-  .dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
-  .billing-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:start}
-  .billing-sticky{position:sticky;top:20px}
-  .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-
-  /* Modals centered on desktop */
-  .modal-overlay{align-items:center}
-  .modal{border-radius:16px;max-width:540px;margin:20px}
-  .modal-handle{display:none}
-
-  /* Customer detail side panel */
-  .cust-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
-}
-
-/* ── TOAST ── */
+/* ══ TOAST ══ */
 #toast{
-  position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;
-  transform:translateX(-50%) translateY(20px);
-  background:var(--db);color:#fff;
-  padding:11px 20px;border-radius:20px;
-  font-size:13.5px;font-weight:500;
-  box-shadow:var(--sh-lg);z-index:9999;
-  transition:all .3s;opacity:0;white-space:nowrap;
-  max-width:90vw;text-align:center;
+  position:fixed;top:calc(var(--top-h) + 12px);left:50%;
+  transform:translateX(-50%) translateY(-20px);
+  background:var(--db);color:#fff;padding:11px 22px;border-radius:20px;
+  font-size:13px;font-weight:500;box-shadow:var(--sh-lg);z-index:9999;
+  transition:all .3s;opacity:0;white-space:nowrap;max-width:90vw;text-align:center;
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.success{border-left:4px solid var(--green)}
 #toast.error{border-left:4px solid var(--red)}
 #toast.info{border-left:4px solid var(--acc)}
-@media(min-width:768px){#toast{bottom:28px}}
 
-/* ── LOADING ── */
-#loading{
-  position:fixed;inset:0;background:var(--db);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:9999;transition:opacity .5s;
-}
+/* ══ LOADING ══ */
+#loading{position:fixed;inset:0;background:var(--db);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
 #loading.hide{opacity:0;pointer-events:none}
 .ld-logo{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:#fff;margin-bottom:6px}
-.ld-sub{font-size:11px;color:var(--sl);letter-spacing:2px;text-transform:uppercase;margin-bottom:30px}
-.ld-spin{width:38px;height:38px;border:3px solid rgba(255,255,255,.12);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.ld-status{margin-top:14px;font-size:12px;color:rgba(255,255,255,.45);max-width:280px;text-align:center;line-height:1.6}
+.ld-sub{font-size:10px;color:var(--sll);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:30px}
+.ld-spin{width:36px;height:36px;border:3px solid rgba(255,255,255,.12);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+.ld-status{margin-top:14px;font-size:12px;color:rgba(255,255,255,.4);max-width:280px;text-align:center;line-height:1.6}
 
-/* ── A4 PREVIEW ── */
+/* ══ A4 PREVIEW ══ */
 #modal-preview .modal{max-height:92vh;overflow:hidden;display:flex;flex-direction:column}
 .a4-scroll{flex:1;overflow-y:auto;background:#64748b;padding:16px;display:flex;flex-direction:column;gap:16px}
-.a4-paper{background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.2);padding:24px 28px 20px;font-family:'DM Sans',Arial,sans-serif;font-size:11.5px;color:#1a1a2e;position:relative}
+.a4-paper{background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.2);padding:26px 30px 22px;font-family:'DM Sans',Arial,sans-serif;font-size:11.5px;color:#1a1a2e;position:relative}
 .a4-ribbon{position:absolute;top:12px;right:12px;background:#0f1f3d;color:#fff;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:3px}
 .a4-head{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:10px;margin-bottom:12px;border-bottom:2px solid #0f1f3d}
 .a4-coname{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#0f1f3d}
@@ -430,11 +392,11 @@ textarea.form-control{resize:vertical;min-height:80px}
 .a4-fbanner{background:#0f1f3d;color:#fff;text-align:center;padding:7px;border-radius:3px;font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:12px}
 .a4-fnote{text-align:center;font-size:8px;color:#94a3b8;margin-top:4px;padding-top:4px;border-top:1px solid #e2e8f0}
 
-/* ── PRINT ── */
+/* ══ PRINT ══ */
 @media print{
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body,html{margin:0;padding:0;background:#fff}
-  #app,#loading,.modal-overlay{display:none!important}
+  #app,#loading,.modal-overlay,#offline-banner{display:none!important}
   #print-area{display:block!important}
   @page{size:A4;margin:0}
   .pp{width:210mm;min-height:297mm;padding:14mm 16mm 12mm;position:relative;font-family:'DM Sans',Arial,sans-serif;font-size:9.5pt;color:#1a1a2e;page-break-after:always;page-break-inside:avoid}
@@ -468,13 +430,34 @@ textarea.form-control{resize:vertical;min-height:80px}
 }
 #print-area{display:none}
 
-/* ── DESKTOP SIDEBAR HIDDEN ON MOBILE ── */
-#desktop-sidebar{display:none}
+/* ══ RESPONSIVE ══ */
+@media(max-width:767px){
+  #sidebar{display:none}
+  #mob-menu-btn{display:flex}
+  #bottom-nav{display:flex}
+  #pages{padding-bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom))}
+  .page{padding:14px}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .form-row{grid-template-columns:1fr 1fr}
+}
+@media(min-width:768px){
+  #mob-menu-btn,.mob-only{display:none!important}
+  #mob-overlay,#mob-sidebar{display:none!important}
+  .page{padding:28px 32px;max-width:980px}
+  .stats-grid{grid-template-columns:repeat(4,1fr);gap:16px}
+  .billing-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:22px;align-items:start}
+  .billing-sticky{position:sticky;top:20px}
+  .cust-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+  .page-fab{right:32px;bottom:32px}
+  .modal-overlay{align-items:center}
+  .modal{border-radius:16px;max-width:540px;margin:20px}
+  .modal-handle{display:none}
+  #toast{top:auto;bottom:28px}
+}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="loading">
   <div class="ld-logo">Apex Agencies</div>
   <div class="ld-sub">Billing System</div>
@@ -482,41 +465,44 @@ textarea.form-control{resize:vertical;min-height:80px}
   <div class="ld-status" id="ld-status">Connecting to Firebase…</div>
 </div>
 
-<!-- APP SHELL -->
 <div id="app">
-
   <!-- DESKTOP SIDEBAR -->
-  <aside id="desktop-sidebar">
-    <div class="ds-brand">
-      <div class="ds-brand-name">⬡ Apex Agencies</div>
-      <div class="ds-brand-sub">Billing System</div>
-      <div class="ds-sync">
-        <span class="sync-dot" id="sync-dot-d"></span>
-        <span id="sync-label-d">Connecting…</span>
-      </div>
+  <aside id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-name">⬡ Apex Agencies</div>
+      <div class="sb-sub">Billing System</div>
+      <div class="sb-sync"><span class="sync-dot" id="sd1"></span><span id="sl1">Connecting…</span></div>
     </div>
-    <div class="ds-nav">
-      <div class="ds-label">Main</div>
-      <div class="ds-link active" onclick="nav('dashboard')" id="dnav-dashboard"><span class="ds-icon">📊</span>Dashboard</div>
-      <div class="ds-link" onclick="nav('billing')" id="dnav-billing"><span class="ds-icon">🧾</span>New Bill</div>
-      <div class="ds-label">Manage</div>
-      <div class="ds-link" onclick="nav('customers')" id="dnav-customers"><span class="ds-icon">👥</span>Customers</div>
-      <div class="ds-link" onclick="nav('stock')" id="dnav-stock"><span class="ds-icon">📦</span>Stock Manager</div>
-      <div class="ds-link" onclick="nav('history')" id="dnav-history"><span class="ds-icon">🕓</span>Bill History</div>
+    <div class="sb-nav">
+      <div class="sb-lbl">Main</div>
+      <div class="sb-link active" onclick="nav('dashboard')" id="dnav-dashboard"><span class="sb-icon">📊</span>Dashboard</div>
+      <div class="sb-link" onclick="nav('billing')" id="dnav-billing"><span class="sb-icon">🧾</span>New Bill</div>
+      <div class="sb-lbl">Manage</div>
+      <div class="sb-link" onclick="nav('customers')" id="dnav-customers"><span class="sb-icon">👥</span>Customers</div>
+      <div class="sb-link" onclick="nav('stock')" id="dnav-stock"><span class="sb-icon">📦</span>Stock Manager</div>
+      <div class="sb-link" onclick="nav('history')" id="dnav-history"><span class="sb-icon">🕓</span>Bill History</div>
     </div>
-    <div class="ds-footer">☁️ Firebase · © 2025 Apex Agencies</div>
+    <div class="sb-footer">☁️ Firebase Realtime DB · © 2025</div>
   </aside>
 
-  <!-- MAIN COLUMN -->
-  <div style="flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden">
-
-    <!-- MOBILE TOP BAR -->
+  <div id="main">
+    <!-- TOP BAR -->
     <div id="topbar">
-      <div class="tb-brand">Apex Agencies</div>
+      <button id="mob-menu-btn" onclick="toggleSidebar()">
+        <span class="hline"></span><span class="hline"></span><span class="hline"></span>
+      </button>
+      <div class="tb-title" id="tb-title">Dashboard</div>
       <div class="tb-right">
-        <div class="sync-pill"><span class="sync-dot" id="sync-dot-m"></span><span id="sync-label-m">Sync</span></div>
-        <div class="tb-date" id="topbar-date"></div>
+        <button class="tb-refresh" id="refresh-btn" onclick="doRefresh()" title="Refresh data">↻</button>
+        <div class="tb-sync"><span class="sync-dot" id="sd2"></span><span id="sl2">Sync</span></div>
+        <div class="tb-date" id="tb-date"></div>
       </div>
+    </div>
+
+    <!-- OFFLINE BANNER -->
+    <div id="offline-banner">
+      <span>📡</span>
+      <span>You're offline — changes will sync when reconnected</span>
     </div>
 
     <!-- PAGES -->
@@ -524,67 +510,69 @@ textarea.form-control{resize:vertical;min-height:80px}
 
       <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
-        <div class="sec-header">
+        <div class="sec-hd">
           <div><div class="sec-title">Good day 👋</div><div class="sec-sub" id="dash-date-sub"></div></div>
         </div>
-        <div class="stats-row">
-          <div class="stat-card sc-blue"><div class="sc-label">Revenue</div><div class="sc-value" id="dash-rev">₹0</div><div class="sc-sub">All time</div><span class="sc-icon">💰</span></div>
-          <div class="stat-card sc-green"><div class="sc-label">Bills</div><div class="sc-value" id="dash-bills">0</div><div class="sc-sub">Invoices</div><span class="sc-icon">🧾</span></div>
-          <div class="stat-card sc-amber"><div class="sc-label">Customers</div><div class="sc-value" id="dash-custs">0</div><div class="sc-sub">In DB</div><span class="sc-icon">👥</span></div>
-          <div class="stat-card sc-red"><div class="sc-label">Low Stock</div><div class="sc-value" id="dash-low">0</div><div class="sc-sub">Items</div><span class="sc-icon">⚠️</span></div>
+        <div class="stats-grid">
+          <div class="stat-card sc-b"><div class="sc-lbl">Revenue</div><div class="sc-val" id="d-rev">₹0</div><div class="sc-sub">All time</div><div class="sc-ico">💰</div></div>
+          <div class="stat-card sc-g"><div class="sc-lbl">Bills</div><div class="sc-val" id="d-bills">0</div><div class="sc-sub">Total invoices</div><div class="sc-ico">🧾</div></div>
+          <div class="stat-card sc-a"><div class="sc-lbl">Customers</div><div class="sc-val" id="d-custs">0</div><div class="sc-sub">In database</div><div class="sc-ico">👥</div></div>
+          <div class="stat-card sc-r"><div class="sc-lbl">Low Stock</div><div class="sc-val" id="d-low">0</div><div class="sc-sub">Items ≤ 10</div><div class="sc-ico">⚠️</div></div>
         </div>
-        <div class="dash-grid">
-          <div>
-            <div class="card">
-              <div class="card-hd"><div class="card-title">📋 Recent Bills</div><button class="btn btn-ghost btn-sm" onclick="nav('history')">View All</button></div>
-              <div id="dash-recent"><div class="empty"><div class="empty-icon">🧾</div><p>No bills yet</p></div></div>
-            </div>
+        <!-- Mini Chart -->
+        <div class="card">
+          <div class="card-hd"><div class="card-title">📊 Last 7 Days Revenue</div></div>
+          <div style="padding:12px 14px 14px">
+            <div id="rev-chart"></div>
           </div>
-          <div>
-            <div class="card">
-              <div class="card-hd"><div class="card-title">⚠️ Low Stock</div></div>
-              <div id="dash-lowlist"><div class="empty"><div class="empty-icon">✅</div><p>All good</p></div></div>
-            </div>
+        </div>
+        <div class="billing-grid" style="display:grid;gap:14px">
+          <div class="card" style="margin:0">
+            <div class="card-hd"><div class="card-title">📋 Recent Bills</div><button class="btn btn-ghost btn-sm" onclick="nav('history')">View All</button></div>
+            <div id="d-recent"><div class="empty"><div class="empty-ico">🧾</div><p>No bills yet</p></div></div>
+          </div>
+          <div class="card" style="margin:0">
+            <div class="card-hd"><div class="card-title">⚠️ Low Stock</div></div>
+            <div id="d-lowlist"><div class="empty"><div class="empty-ico">✅</div><p>All stock healthy</p></div></div>
           </div>
         </div>
       </div>
 
       <!-- NEW BILL -->
       <div class="page" id="page-billing">
-        <div class="sec-header"><div class="sec-title">🧾 New Bill</div></div>
+        <div class="sec-hd"><div class="sec-title">🧾 New Bill</div></div>
         <div class="billing-grid">
           <div>
-            <div class="card" style="margin-bottom:14px">
-              <div class="card-hd"><div class="card-title">Customer Details</div></div>
+            <div class="card">
+              <div class="card-hd"><div class="card-title">Customer &amp; Details</div></div>
               <div class="card-body">
                 <div class="form-group">
                   <label class="form-label">Customer Name *</label>
                   <div class="ac-wrap">
-                    <input class="form-control" id="bill-cust" placeholder="Type to search…" autocomplete="off"
-                      oninput="acInput()" onkeydown="acKey(event)" onblur="setTimeout(acHide,180)">
+                    <input class="form-control" id="bill-cust" placeholder="Type to search customers…" autocomplete="off" oninput="acInput()" onkeydown="acKey(event)" onblur="setTimeout(acHide,180)">
                     <div class="ac-list" id="ac-list"></div>
                   </div>
                 </div>
-                <div id="bill-cust-info" style="display:none;background:var(--bg);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--ts);margin-bottom:12px;line-height:1.8"></div>
+                <div id="bill-cust-info" style="display:none;background:#eff6ff;border-radius:9px;padding:9px 12px;font-size:12px;color:#1e40af;margin-bottom:12px;line-height:1.8"></div>
                 <div class="form-row">
-                  <div class="form-group"><label class="form-label">Invoice No.</label><input class="form-control" id="bill-num"></div>
+                  <div class="form-group"><label class="form-label">Invoice No.</label><input class="form-control" id="bill-num" readonly style="background:var(--bg);cursor:not-allowed"></div>
                   <div class="form-group"><label class="form-label">Date</label><input class="form-control" type="date" id="bill-date"></div>
                 </div>
                 <div class="form-group" style="margin-bottom:0">
-                  <label class="form-label">Payment</label>
+                  <label class="form-label">Payment Terms</label>
                   <select class="form-control" id="bill-pay"><option>Cash</option><option>Credit</option><option>CDC</option><option>Bank Transfer</option><option>Cheque</option><option>UPI</option></select>
                 </div>
               </div>
             </div>
-
-            <div class="card" style="margin-bottom:14px">
+            <div style="height:14px"></div>
+            <div class="card">
               <div class="card-hd"><div class="card-title">Add Product</div></div>
               <div class="card-body">
                 <div class="form-group"><label class="form-label">Product</label>
                   <select class="form-control" id="bill-prod" onchange="onProdSel()"><option value="">— Choose product —</option></select>
                 </div>
-                <div id="prod-info" style="display:none;background:var(--bg);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--ts);margin-bottom:12px">
-                  <span>₹<strong id="pi-price">—</strong></span> &nbsp;·&nbsp; GST: <strong id="pi-tax">—</strong>% &nbsp;·&nbsp; Stock: <strong id="pi-stock">—</strong>
+                <div id="prod-info" style="display:none;background:#eff6ff;border-radius:9px;padding:9px 12px;font-size:12.5px;color:#1e40af;margin-bottom:12px">
+                  ₹<strong id="pi-price">—</strong> &nbsp;·&nbsp; GST <strong id="pi-tax">—</strong>% &nbsp;·&nbsp; Stock: <strong id="pi-stock">—</strong>
                 </div>
                 <div class="form-row">
                   <div class="form-group"><label class="form-label">Qty</label><input class="form-control" type="number" id="bill-qty" min="1" value="1"></div>
@@ -593,18 +581,17 @@ textarea.form-control{resize:vertical;min-height:80px}
                 <button class="btn btn-primary btn-full" onclick="addItem()">+ Add to Bill</button>
               </div>
             </div>
-
-            <div class="card" style="margin-bottom:14px">
+            <div style="height:14px"></div>
+            <div class="card">
               <div class="card-hd"><div class="card-title">Bill Items</div><span id="bill-item-count" class="badge bg-blue">0</span></div>
-              <div class="card-body" id="bill-items-body" style="padding:8px 12px">
-                <div class="empty"><div class="empty-icon">🛒</div><p>No items added yet</p></div>
+              <div style="padding:10px 12px" id="bill-items-body">
+                <div class="empty"><div class="empty-ico">🛒</div><p>No items added yet</p></div>
               </div>
             </div>
           </div>
-
           <div class="billing-sticky">
             <div class="totals-card">
-              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.45);margin-bottom:12px">Bill Summary</div>
+              <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);margin-bottom:12px">Bill Summary</div>
               <div class="tc-row"><span>Subtotal</span><span style="font-family:'DM Mono',monospace" id="b-sub">₹0.00</span></div>
               <div class="tc-row"><span>Total GST</span><span style="font-family:'DM Mono',monospace" id="b-tax">₹0.00</span></div>
               <div class="tc-grand"><span>Grand Total</span><span id="b-grand">₹0.00</span></div>
@@ -617,23 +604,13 @@ textarea.form-control{resize:vertical;min-height:80px}
 
       <!-- CUSTOMERS -->
       <div class="page" id="page-customers">
-        <div class="sec-header">
-          <div class="sec-title">👥 Customers</div>
-          <button class="btn btn-primary btn-sm" onclick="openCustModal()">+ Add</button>
-        </div>
-        <div class="search-bar">
-          <span class="search-icon">🔍</span>
-          <input id="cust-search" placeholder="Search customers…" oninput="renderCustomers()">
-        </div>
+        <div class="sec-hd"><div class="sec-title">👥 Customers</div><button class="btn btn-primary btn-sm" onclick="openCustModal()">+ Add</button></div>
+        <div class="search-bar"><span class="search-ico">🔍</span><input id="cust-search" placeholder="Search by name, phone…" oninput="renderCustomers()"></div>
         <div class="cust-grid">
-          <div class="card" style="margin-bottom:0"><div id="cust-count-lbl" style="padding:12px 16px;font-size:12px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--line)">All Customers</div><div id="cust-list"></div></div>
-          <div class="card" id="cust-detail" style="display:none;margin-bottom:0">
-            <div class="card-hd">
-              <div class="card-title" id="cust-det-name">Details</div>
-              <div style="display:flex;gap:6px">
-                <button class="btn btn-ghost btn-sm" id="cust-det-edit">✏️</button>
-                <button class="btn btn-danger btn-sm" id="cust-det-del">🗑</button>
-              </div>
+          <div class="card" style="margin:0"><div id="cust-count-lbl" style="padding:10px 14px;font-size:10px;font-weight:700;color:var(--sl);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--line)">All Customers</div><div id="cust-list"></div></div>
+          <div class="card" id="cust-detail" style="display:none;margin:0">
+            <div class="card-hd"><div class="card-title" id="cust-det-name">Details</div>
+              <div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" id="cust-det-edit">✏️ Edit</button><button class="btn btn-danger btn-sm" id="cust-det-del">🗑</button></div>
             </div>
             <div class="card-body" id="cust-det-body"></div>
           </div>
@@ -642,55 +619,52 @@ textarea.form-control{resize:vertical;min-height:80px}
 
       <!-- STOCK -->
       <div class="page" id="page-stock">
-        <div class="sec-header">
-          <div class="sec-title">📦 Stock Manager</div>
-          <button class="btn btn-primary btn-sm" onclick="openProdModal()">+ Add</button>
-        </div>
-        <div class="search-bar">
-          <span class="search-icon">🔍</span>
-          <input id="stock-search" placeholder="Search products…" oninput="renderStock()">
-        </div>
+        <div class="sec-hd"><div class="sec-title">📦 Stock Manager</div><button class="btn btn-primary btn-sm" onclick="openProdModal()">+ Add</button></div>
+        <div class="search-bar"><span class="search-ico">🔍</span><input id="stock-search" placeholder="Search products…" oninput="renderStock()"></div>
         <div class="card"><div id="stock-list"></div></div>
       </div>
 
       <!-- HISTORY -->
       <div class="page" id="page-history">
-        <div class="sec-header">
-          <div class="sec-title">🕓 Bill History</div>
-          <div style="font-size:12px;color:var(--slate)" id="hist-count"></div>
-        </div>
-        <div class="search-bar">
-          <span class="search-icon">🔍</span>
-          <input id="hist-search" placeholder="Search bills…" oninput="renderHistory()">
-        </div>
+        <div class="sec-hd"><div class="sec-title">🕓 Bill History</div><div style="font-size:12px;color:var(--sl)" id="hist-count"></div></div>
+        <div class="search-bar"><span class="search-ico">🔍</span><input id="hist-search" placeholder="Search by customer, invoice, date…" oninput="renderHistory()"></div>
         <div class="card"><div id="hist-list"></div></div>
       </div>
 
     </div><!-- end #pages -->
 
-    <!-- BOTTOM NAV (mobile) -->
+    <!-- FIXED BOTTOM NAV -->
     <nav id="bottom-nav">
-      <button class="bn-item active" onclick="nav('dashboard')" id="bnav-dashboard">
-        <span class="bn-icon">📊</span><span>Home</span>
-      </button>
-      <button class="bn-item" onclick="nav('customers')" id="bnav-customers">
-        <span class="bn-icon">👥</span><span>Customers</span>
-      </button>
-      <button class="bn-fab" onclick="nav('billing')" id="bnav-billing" title="New Bill">＋</button>
-      <button class="bn-item" onclick="nav('stock')" id="bnav-stock">
-        <span class="bn-icon">📦</span><span>Stock</span>
-      </button>
-      <button class="bn-item" onclick="nav('history')" id="bnav-history">
-        <span class="bn-icon">🕓</span><span>History</span>
-      </button>
+      <button class="bn-item active" onclick="nav('dashboard')" id="bnav-dashboard"><span class="bn-icon">📊</span><span>Home</span></button>
+      <button class="bn-item" onclick="nav('customers')" id="bnav-customers"><span class="bn-icon">👥</span><span>Customers</span></button>
+      <button class="bn-fab" onclick="nav('billing')" id="bnav-billing">＋</button>
+      <button class="bn-item" onclick="nav('stock')" id="bnav-stock"><span class="bn-icon">📦</span><span>Stock</span></button>
+      <button class="bn-item" onclick="nav('history')" id="bnav-history"><span class="bn-icon">🕓</span><span>History</span></button>
     </nav>
+  </div>
+</div>
 
-  </div><!-- end main column -->
-</div><!-- end #app -->
+<!-- MOBILE SIDEBAR -->
+<div id="mob-overlay" onclick="closeSidebar()"></div>
+<div id="mob-sidebar">
+  <div class="sb-brand">
+    <div class="sb-name">⬡ Apex Agencies</div>
+    <div class="sb-sub">Billing System</div>
+    <div class="sb-sync"><span class="sync-dot" id="sd3"></span><span id="sl3">Connecting…</span></div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-lbl">Main</div>
+    <div class="sb-link active" onclick="nav('dashboard');closeSidebar()" id="mnav-dashboard"><span class="sb-icon">📊</span>Dashboard</div>
+    <div class="sb-link" onclick="nav('billing');closeSidebar()" id="mnav-billing"><span class="sb-icon">🧾</span>New Bill</div>
+    <div class="sb-lbl">Manage</div>
+    <div class="sb-link" onclick="nav('customers');closeSidebar()" id="mnav-customers"><span class="sb-icon">👥</span>Customers</div>
+    <div class="sb-link" onclick="nav('stock');closeSidebar()" id="mnav-stock"><span class="sb-icon">📦</span>Stock Manager</div>
+    <div class="sb-link" onclick="nav('history');closeSidebar()" id="mnav-history"><span class="sb-icon">🕓</span>Bill History</div>
+  </div>
+  <div class="sb-footer">☁️ Firebase Realtime DB · © 2025</div>
+</div>
 
 <!-- MODALS -->
-
-<!-- Product Modal -->
 <div class="modal-overlay" id="modal-prod">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -699,7 +673,7 @@ textarea.form-control{resize:vertical;min-height:80px}
       <input type="hidden" id="mp-id">
       <div class="form-group"><label class="form-label">Product Name *</label><input class="form-control" id="mp-name" placeholder="e.g. Premium Basmati Rice 5kg"></div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Category *</label><input class="form-control" id="mp-cat" placeholder="e.g. Grains"></div>
+        <div class="form-group"><label class="form-label">Category *</label><input class="form-control" id="mp-cat"></div>
         <div class="form-group"><label class="form-label">Price (₹) *</label><input class="form-control" type="number" id="mp-price" min="0" step="0.01"></div>
       </div>
       <div class="form-row">
@@ -707,11 +681,10 @@ textarea.form-control{resize:vertical;min-height:80px}
         <div class="form-group"><label class="form-label">Stock</label><input class="form-control" type="number" id="mp-stock" min="0" placeholder="0"></div>
       </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-prod')">Cancel</button><button class="btn btn-primary" onclick="saveProd()">Save</button></div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-prod')">Cancel</button><button class="btn btn-primary" onclick="saveProd()">Save Product</button></div>
   </div>
 </div>
 
-<!-- Customer Modal -->
 <div class="modal-overlay" id="modal-cust">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -720,10 +693,10 @@ textarea.form-control{resize:vertical;min-height:80px}
       <input type="hidden" id="mc-id">
       <div class="form-row">
         <div class="form-group"><label class="form-label">Name / Company *</label><input class="form-control" id="mc-name" placeholder="Ravi Enterprises"></div>
-        <div class="form-group"><label class="form-label">Contact Person</label><input class="form-control" id="mc-contact" placeholder="Ravi Kumar"></div>
+        <div class="form-group"><label class="form-label">Contact Person</label><input class="form-control" id="mc-contact"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Phone</label><input class="form-control" id="mc-phone" type="tel" placeholder="+91 98765 43210"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-control" id="mc-phone" type="tel"></div>
         <div class="form-group"><label class="form-label">Email</label><input class="form-control" type="email" id="mc-email"></div>
       </div>
       <div class="form-group"><label class="form-label">Address</label><textarea class="form-control" id="mc-addr" placeholder="Street, City, State, PIN"></textarea></div>
@@ -734,15 +707,14 @@ textarea.form-control{resize:vertical;min-height:80px}
         </div>
       </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-cust')">Cancel</button><button class="btn btn-primary" onclick="saveCust()">Save</button></div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-cust')">Cancel</button><button class="btn btn-primary" onclick="saveCust()">Save Customer</button></div>
   </div>
 </div>
 
-<!-- Edit Bill Modal -->
 <div class="modal-overlay" id="modal-edit-bill">
   <div class="modal" style="max-width:600px">
     <div class="modal-handle"></div>
-    <div class="modal-hd"><div class="modal-title">✏️ Edit Bill</div><button class="modal-close" onclick="closeModal('modal-edit-bill')">×</button></div>
+    <div class="modal-hd"><div class="modal-title">✏️ Edit / Revise Bill</div><button class="modal-close" onclick="closeModal('modal-edit-bill')">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="eb-id">
       <div class="form-row">
@@ -755,39 +727,37 @@ textarea.form-control{resize:vertical;min-height:80px}
           <select class="form-control" id="eb-pay"><option>Cash</option><option>Credit</option><option>CDC</option><option>Bank Transfer</option><option>Cheque</option><option>UPI</option></select>
         </div>
       </div>
-      <div style="font-size:12px;font-weight:600;color:var(--ts);letter-spacing:.3px;margin-bottom:8px">ITEMS</div>
+      <div style="font-size:11px;font-weight:700;color:var(--ts);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">Items — Edit Quantities</div>
       <div id="eb-items" style="background:var(--bg);border-radius:10px;padding:4px 12px;margin-bottom:14px"></div>
       <div style="background:linear-gradient(135deg,var(--db),var(--db2));border-radius:10px;padding:14px 16px;color:#fff">
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.7);margin-bottom:4px"><span>Subtotal</span><span id="eb-sub">₹0.00</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.7);margin-bottom:4px"><span>GST</span><span id="eb-gtax">₹0.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.65);margin-bottom:4px"><span>Subtotal</span><span id="eb-sub">₹0.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.65);margin-bottom:4px"><span>GST</span><span id="eb-gtax">₹0.00</span></div>
         <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:700;border-top:1px solid rgba(255,255,255,.2);margin-top:8px;padding-top:10px"><span>Total</span><span id="eb-grand">₹0.00</span></div>
       </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-edit-bill')">Cancel</button><button class="btn btn-primary" onclick="saveEditBill()">💾 Save</button></div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-edit-bill')">Cancel</button><button class="btn btn-primary" onclick="saveEditBill()">💾 Save Changes</button></div>
   </div>
 </div>
 
-<!-- Preview Modal -->
 <div class="modal-overlay" id="modal-preview">
   <div class="modal" style="max-width:720px;border-radius:20px 20px 0 0;max-height:92vh;overflow:hidden;display:flex;flex-direction:column">
     <div class="modal-handle"></div>
     <div class="modal-hd" style="flex-shrink:0"><div class="modal-title" id="preview-title">Invoice Preview</div><button class="modal-close" onclick="closeModal('modal-preview')">×</button></div>
     <div class="a4-scroll" id="a4-scroll"></div>
-    <div class="modal-footer" style="flex-shrink:0"><button class="btn btn-ghost" onclick="closeModal('modal-preview')">Close</button><button class="btn btn-primary" onclick="doPrint()">🖨 Print / PDF</button></div>
+    <div class="modal-footer" style="flex-shrink:0"><button class="btn btn-ghost" onclick="closeModal('modal-preview')">Close</button><button class="btn btn-primary" onclick="doPrint()">🖨 Print / Save PDF</button></div>
   </div>
 </div>
 
 <div id="print-area"></div>
 <div id="toast"></div>
 
-<!-- FIREBASE REALTIME DATABASE SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
 // ══════════════════════════════════════════
 // FIREBASE CONFIG
 // ══════════════════════════════════════════
-const firebaseConfig = {
+const firebaseConfig={
   apiKey:"AIzaSyBorcUmXEyVU3Xh2bG0klPKIXhW1ybhfLw",
   authDomain:"apex-agencies.firebaseapp.com",
   databaseURL:"https://apex-agencies-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -797,7 +767,7 @@ const firebaseConfig = {
   appId:"1:765699764908:web:66026d633c52bca397e509"
 };
 firebase.initializeApp(firebaseConfig);
-const rtdb = firebase.database();
+const rtdb=firebase.database();
 
 // ══════════════════════════════════════════
 // DB HELPERS
@@ -809,23 +779,25 @@ function dbRead(path){
     return Object.entries(val).map(([id,data])=>({id,...data}));
   });
 }
-function dbPush(path,data){
-  const ref=rtdb.ref(path).push();
-  return ref.set({...data,createdAt:Date.now()}).then(()=>ref.key);
-}
-function dbSet(path,data){ return rtdb.ref(path).update({...data,updatedAt:Date.now()}); }
-function dbDel(path){ return rtdb.ref(path).remove(); }
+function dbReadVal(path){return rtdb.ref(path).once('value').then(s=>s.val());}
+function dbPush(path,data){const ref=rtdb.ref(path).push();return ref.set({...data,createdAt:Date.now()}).then(()=>ref.key);}
+function dbSet(path,data){return rtdb.ref(path).update({...data,updatedAt:Date.now()});}
+function dbDel(path){return rtdb.ref(path).remove();}
+function dbSetVal(path,val){return rtdb.ref(path).set(val);}
 
 // ══════════════════════════════════════════
 // CACHE
 // ══════════════════════════════════════════
-let cacheItems=[],cacheBills=[],cacheCustomers=[];
+let cacheItems=[],cacheBills=[],cacheCustomers=[],billCounter=0;
 
 async function loadAll(){
-  setLS('Loading products…'); cacheItems=await dbRead('items');
-  setLS('Loading customers…'); cacheCustomers=await dbRead('customers');
-  setLS('Loading bills…'); cacheBills=await dbRead('bills');
+  setLS('Loading…');
+  [cacheItems,cacheCustomers,cacheBills]=await Promise.all([
+    dbRead('items'),dbRead('customers'),dbRead('bills')
+  ]);
   cacheBills.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const ctr=await dbReadVal('meta/billCounter');
+  billCounter=ctr||0;
 }
 
 // ══════════════════════════════════════════
@@ -833,67 +805,87 @@ async function loadAll(){
 // ══════════════════════════════════════════
 async function init(){
   const now=new Date();
-  document.getElementById('topbar-date').textContent=now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+  document.getElementById('tb-date').textContent=now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
   document.getElementById('dash-date-sub').textContent=now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // Offline detection
+  rtdb.ref('.info/connected').on('value',snap=>{
+    const connected=snap.val();
+    setSyncStatus(connected);
+    document.getElementById('offline-banner').className=connected?'':'show';
+  });
+
   try{
-    setLS('Connecting to Firebase…');
-    await rtdb.ref('.info/connected').once('value');
-    setLS('Connected! Loading data…');
+    setLS('Connecting…');
     await loadAll();
-    if(!cacheItems.length){
-      setLS('Setting up sample products…');
-      const s=[
-        {name:'Premium Basmati Rice 5kg',category:'Grains',price:480,gst:5,stock:120},
-        {name:'Toor Dal 1kg',category:'Pulses',price:145,gst:5,stock:85},
-        {name:'Refined Sunflower Oil 1L',category:'Oils',price:155,gst:12,stock:60},
-        {name:'Sugar 1kg',category:'Sweeteners',price:48,gst:0,stock:200},
-        {name:'Atta Wheat Flour 10kg',category:'Grains',price:380,gst:0,stock:8},
-        {name:'Chana Dal 1kg',category:'Pulses',price:125,gst:5,stock:5},
-      ];
-      for(const x of s) await dbPush('items',x);
-      cacheItems=await dbRead('items');
-    }
-    if(!cacheCustomers.length){
-      setLS('Setting up sample customers…');
-      const sc=[
-        {name:'Ravi Enterprises',contact:'Ravi Kumar',phone:'+91 98765 43210',email:'ravi@example.com',address:'12, MG Road, Bengaluru, Karnataka 560001',gstin:'29AABCE1234F1Z5',type:'Wholesale'},
-        {name:'Sharma General Store',contact:'Priya Sharma',phone:'+91 91234 56789',email:'sharma@example.com',address:'45, Station Road, Pune, Maharashtra 411001',gstin:'27AABCS5678G1Z3',type:'Retail'},
-      ];
-      for(const c of sc) await dbPush('customers',c);
-      cacheCustomers=await dbRead('customers');
-    }
-    setSyncStatus(true);
     hideLoading();
     nav('dashboard');
   }catch(err){
-    setLS('❌ Error: '+err.message+'\n\nMake sure: (1) You have internet (2) Realtime Database is enabled in Firebase Console (3) Database rules allow read/write');
+    setLS('❌ '+err.message+'\n\nCheck: Firebase Realtime Database is enabled and rules allow read/write.');
     console.error(err);
   }
 }
+
 function setLS(m){document.getElementById('ld-status').textContent=m;}
 function hideLoading(){const el=document.getElementById('loading');el.classList.add('hide');setTimeout(()=>el.style.display='none',500);}
 function setSyncStatus(ok){
-  ['sync-dot-d','sync-dot-m'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='sync-dot'+(ok?' live':'');});
-  ['sync-label-d','sync-label-m'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ok?'Live ✓':'Offline';});
+  ['sd1','sd2','sd3'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='sync-dot'+(ok?' live':'');});
+  ['sl1','sl2','sl3'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ok?'Live ✓':'Offline';});
+}
+
+// ══════════════════════════════════════════
+// REFRESH
+// ══════════════════════════════════════════
+async function doRefresh(){
+  const btn=document.getElementById('refresh-btn');
+  btn.classList.add('spinning');
+  try{
+    await loadAll();
+    const cur=document.querySelector('.page.active');
+    const p=cur?cur.id.replace('page-',''):'dashboard';
+    if(p==='dashboard')refreshDash();
+    if(p==='stock')renderStock();
+    if(p==='history')renderHistory();
+    if(p==='customers')renderCustomers();
+    if(p==='billing')initBilling();
+    toast('Data refreshed ✓');
+  }catch(e){toast('Refresh failed','error');}
+  btn.classList.remove('spinning');
 }
 
 // ══════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════
-const TITLES={dashboard:'Dashboard',billing:'New Bill',customers:'Customers',stock:'Stock',history:'History'};
+const TITLES={dashboard:'Dashboard',billing:'New Bill',customers:'Customers',stock:'Stock Manager',history:'Bill History'};
 async function nav(p){
   document.querySelectorAll('.page').forEach(v=>v.classList.remove('active'));
-  document.querySelectorAll('.bn-item,.bn-fab').forEach(a=>a.classList.remove('active'));
-  document.querySelectorAll('.ds-link').forEach(a=>a.classList.remove('active'));
+  document.querySelectorAll('.sb-link,.bn-item,.bn-fab').forEach(a=>a.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
-  const bn=document.getElementById('bnav-'+p); if(bn)bn.classList.add('active');
-  const dn=document.getElementById('dnav-'+p); if(dn)dn.classList.add('active');
+  ['dnav-','mnav-','bnav-'].forEach(pre=>{const el=document.getElementById(pre+p);if(el)el.classList.add('active');});
+  document.getElementById('tb-title').textContent=TITLES[p];
+  document.getElementById('pages').scrollTop=0;
   if(p==='dashboard'){await loadAll();refreshDash();}
   if(p==='stock'){cacheItems=await dbRead('items');renderStock();}
   if(p==='history'){cacheBills=await dbRead('bills');cacheBills.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));renderHistory();}
-  if(p==='billing'){cacheItems=await dbRead('items');cacheCustomers=await dbRead('customers');initBilling();}
+  if(p==='billing'){await loadAll();initBilling();}
   if(p==='customers'){cacheCustomers=await dbRead('customers');renderCustomers();}
-  document.getElementById('pages').scrollTop=0;
+}
+
+// ══════════════════════════════════════════
+// SIDEBAR (MOBILE)
+// ══════════════════════════════════════════
+function toggleSidebar(){
+  const sb=document.getElementById('mob-sidebar');
+  const ov=document.getElementById('mob-overlay');
+  const btn=document.getElementById('mob-menu-btn');
+  const open=sb.classList.toggle('open');
+  ov.classList.toggle('open',open);
+  btn.classList.toggle('open',open);
+}
+function closeSidebar(){
+  document.getElementById('mob-sidebar').classList.remove('open');
+  document.getElementById('mob-overlay').classList.remove('open');
+  document.getElementById('mob-menu-btn').classList.remove('open');
 }
 
 // ══════════════════════════════════════════
@@ -903,28 +895,51 @@ function toast(msg,type='success'){
   const t=document.getElementById('toast');
   t.textContent=(type==='success'?'✓ ':type==='error'?'✗ ':'ℹ ')+msg;
   t.className='show '+type;
-  clearTimeout(t._t);t._t=setTimeout(()=>{t.className=''},3200);
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.className=''},3000);
 }
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
 // ══════════════════════════════════════════
-// DASHBOARD
+// DASHBOARD + MINI CHART
 // ══════════════════════════════════════════
 function refreshDash(){
   const rev=cacheBills.reduce((s,b)=>s+(b.grandTotal||0),0);
-  document.getElementById('dash-rev').textContent='₹'+fmt(rev);
-  document.getElementById('dash-bills').textContent=cacheBills.length;
-  document.getElementById('dash-custs').textContent=cacheCustomers.length;
+  document.getElementById('d-rev').textContent='₹'+fmt(rev);
+  document.getElementById('d-bills').textContent=cacheBills.length;
+  document.getElementById('d-custs').textContent=cacheCustomers.length;
   const low=cacheItems.filter(i=>i.stock<=10);
-  document.getElementById('dash-low').textContent=low.length;
-  document.getElementById('dash-recent').innerHTML=cacheBills.slice(0,6).length
-    ?cacheBills.slice(0,6).map(b=>`<div class="list-item"><div class="li-left"><div class="li-title">${esc(b.customer)}</div><div class="li-sub">${b.date} · ${b.billNumber||''}</div></div><div class="li-right"><div class="li-amount">₹${fmt(b.grandTotal)}</div><div class="li-tag">${b.payment||'Cash'}</div></div></div>`).join('')
-    :'<div class="empty"><div class="empty-icon">🧾</div><p>No bills yet</p></div>';
-  document.getElementById('dash-lowlist').innerHTML=low.length
-    ?low.map(i=>`<div class="ls-item"><div><div style="font-size:14px;font-weight:500">${esc(i.name)}</div><div style="font-size:11px;color:var(--slate)">${esc(i.category)}</div></div><span class="badge ${i.stock===0?'bg-red':'bg-amber'}">${i.stock} left</span></div>`).join('')
-    :'<div class="empty"><div class="empty-icon">✅</div><p>All stock healthy</p></div>';
+  document.getElementById('d-low').textContent=low.length;
+
+  // Recent bills
+  document.getElementById('d-recent').innerHTML=cacheBills.slice(0,6).length
+    ?cacheBills.slice(0,6).map(b=>`<div class="list-item"><div><div class="li-title">${esc(b.customer)}</div><div class="li-sub">${b.date} · ${b.billNumber||''}</div></div><div class="li-right"><div class="li-amount">₹${fmt(b.grandTotal)}</div><div class="li-tag">${b.payment||'Cash'}</div></div></div>`).join('')
+    :'<div class="empty"><div class="empty-ico">🧾</div><p>No bills yet</p></div>';
+
+  // Low stock
+  document.getElementById('d-lowlist').innerHTML=low.length
+    ?low.map(i=>`<div class="ls-item"><div><div style="font-size:13.5px;font-weight:500">${esc(i.name)}</div><div style="font-size:11px;color:var(--sl)">${esc(i.category)}</div></div><span class="badge ${i.stock===0?'bg-red':'bg-amber'}">${i.stock} left</span></div>`).join('')
+    :'<div class="empty"><div class="empty-ico">✅</div><p>All stock healthy</p></div>';
+
+  // Mini bar chart — last 7 days
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today=new Date();
+  const dayData=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(today);d.setDate(d.getDate()-i);
+    const ds=d.toISOString().split('T')[0];
+    const total=cacheBills.filter(b=>b.date===ds).reduce((s,b)=>s+(b.grandTotal||0),0);
+    dayData.push({label:days[d.getDay()],val:total,isToday:i===0});
+  }
+  const maxVal=Math.max(...dayData.map(d=>d.val),1);
+  document.getElementById('rev-chart').innerHTML=dayData.map(d=>`
+    <div class="chart-bar-wrap">
+      <div style="font-size:8.5px;color:var(--sl);font-family:'DM Mono',monospace;min-height:14px;text-align:center">${d.val>0?'₹'+fmtShort(d.val):''}</div>
+      <div class="chart-bar ${d.isToday?'today':''}" style="height:${Math.max(4,Math.round((d.val/maxVal)*72))}px"></div>
+      <div class="chart-day ${d.isToday?'':''}' style="${d.isToday?'color:var(--green);font-weight:700':''}">${d.label}</div>
+    </div>`).join('');
 }
+function fmtShort(n){if(n>=1000)return(n/1000).toFixed(1)+'k';return n;}
 
 // ══════════════════════════════════════════
 // CUSTOMERS
@@ -935,32 +950,29 @@ function renderCustomers(){
   const f=cacheCustomers.filter(c=>c.name.toLowerCase().includes(q)||(c.phone||'').includes(q)||(c.email||'').toLowerCase().includes(q));
   document.getElementById('cust-count-lbl').textContent=`All Customers (${f.length})`;
   const list=document.getElementById('cust-list');
-  if(!f.length){list.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>No customers found</p></div>';return;}
+  if(!f.length){list.innerHTML='<div class="empty"><div class="empty-ico">👥</div><p>No customers found</p></div>';return;}
   list.innerHTML=f.map(c=>`
     <div class="cust-card ${selCustId===c.id?'selected':''}" onclick="showCustDetail('${c.id}')">
       <div class="cust-av">${esc(c.name.charAt(0).toUpperCase())}</div>
-      <div class="cust-info"><div class="cust-name">${esc(c.name)}</div><div class="cust-sub">${esc(c.phone||'')}${c.phone&&c.type?' · ':''}${esc(c.type||'')}</div></div>
-      <span class="badge bg-blue">${esc(c.type||'Retail')}</span>
+      <div style="flex:1;min-width:0"><div class="cust-name">${highlight(c.name,q)}</div><div class="cust-sub">${esc(c.phone||'')}${c.phone&&c.type?' · ':''}${esc(c.type||'')}</div></div>
+      <span class="badge bg-blue" style="flex-shrink:0">${esc(c.type||'Retail')}</span>
     </div>`).join('');
 }
 function showCustDetail(id){
   selCustId=id;
-  const c=cacheCustomers.find(x=>x.id===id);
-  if(!c)return;
-  const det=document.getElementById('cust-detail');
-  det.style.display='';
+  const c=cacheCustomers.find(x=>x.id===id);if(!c)return;
+  document.getElementById('cust-detail').style.display='';
   document.getElementById('cust-det-name').textContent=c.name;
   document.getElementById('cust-det-body').innerHTML=`
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-      ${[['Contact',c.contact||'—'],['Type',`<span class="badge bg-blue">${esc(c.type||'Retail')}</span>`],['Phone',c.phone||'—'],['Email',c.email||'—']].map(([l,v])=>`<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--slate);margin-bottom:3px">${l}</div><div style="font-size:14px">${v}</div></div>`).join('')}
-      <div style="grid-column:1/-1"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--slate);margin-bottom:3px">Address</div><div style="font-size:13px;line-height:1.6">${esc(c.address||'—')}</div></div>
-      <div style="grid-column:1/-1"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--slate);margin-bottom:3px">GSTIN</div><div style="font-size:13px;font-family:'DM Mono',monospace">${esc(c.gstin||'—')}</div></div>
+      ${[['Contact',c.contact||'—'],['Type',`<span class="badge bg-blue">${esc(c.type||'Retail')}</span>`],['Phone',c.phone||'—'],['Email',c.email||'—']].map(([l,v])=>`<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--sl);margin-bottom:3px">${l}</div><div style="font-size:13.5px">${v}</div></div>`).join('')}
+      <div style="grid-column:1/-1"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--sl);margin-bottom:3px">Address</div><div style="font-size:13px;line-height:1.6">${esc(c.address||'—')}</div></div>
+      <div style="grid-column:1/-1"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--sl);margin-bottom:3px">GSTIN</div><div style="font-size:13px;font-family:'DM Mono',monospace">${esc(c.gstin||'—')}</div></div>
     </div>`;
   document.getElementById('cust-det-edit').onclick=()=>editCust(id);
   document.getElementById('cust-det-del').onclick=()=>deleteCust(id);
   renderCustomers();
-  // On mobile scroll to detail
-  if(window.innerWidth<768) det.scrollIntoView({behavior:'smooth'});
+  if(window.innerWidth<768)document.getElementById('cust-detail').scrollIntoView({behavior:'smooth'});
 }
 function openCustModal(data){
   ['mc-id','mc-name','mc-contact','mc-phone','mc-email','mc-addr','mc-gst'].forEach(id=>document.getElementById(id).value='');
@@ -968,7 +980,7 @@ function openCustModal(data){
   document.getElementById('cust-modal-title').textContent='Add Customer';
   if(data){
     document.getElementById('mc-id').value=data.id||'';
-    ['name','contact','phone','email'].forEach(f=>{document.getElementById('mc-'+f).value=data[f]||'';});
+    ['name','contact','phone','email'].forEach(f=>document.getElementById('mc-'+f).value=data[f]||'');
     document.getElementById('mc-addr').value=data.address||'';
     document.getElementById('mc-gst').value=data.gstin||'';
     document.getElementById('mc-type').value=data.type||'Retail';
@@ -1006,7 +1018,7 @@ function acInput(){
   const matches=cacheCustomers.filter(c=>c.name.toLowerCase().includes(q)||(c.phone||'').includes(q));
   if(!matches.length){list.classList.remove('open');return;}
   acIdx=-1;
-  list.innerHTML=matches.slice(0,6).map(c=>`<div class="ac-item" data-id="${c.id}" onmousedown="acSelect('${c.id}')"><div class="ac-name">${esc(c.name)}</div><div class="ac-sub">${esc(c.phone||'')}${c.phone&&c.type?' · ':''}${esc(c.type||'')}</div></div>`).join('');
+  list.innerHTML=matches.slice(0,6).map(c=>`<div class="ac-item" data-id="${c.id}" onmousedown="acSelect('${c.id}')"><div class="ac-name">${highlight(c.name,q)}</div><div class="ac-sub">${esc(c.phone||'')}${c.phone&&c.type?' · ':''}${esc(c.type||'')}</div></div>`).join('');
   list.classList.add('open');
 }
 function acHide(){document.getElementById('ac-list').classList.remove('open');}
@@ -1015,7 +1027,7 @@ function acKey(e){
   if(!items.length)return;
   if(e.key==='ArrowDown'){acIdx=Math.min(acIdx+1,items.length-1);items.forEach((el,i)=>el.classList.toggle('hi',i===acIdx));e.preventDefault();}
   else if(e.key==='ArrowUp'){acIdx=Math.max(acIdx-1,0);items.forEach((el,i)=>el.classList.toggle('hi',i===acIdx));e.preventDefault();}
-  else if(e.key==='Enter'&&acIdx>=0){const sel=items[acIdx];if(sel)acSelect(sel.dataset.id);}
+  else if(e.key==='Enter'&&acIdx>=0){const s=items[acIdx];if(s)acSelect(s.dataset.id);}
 }
 function acSelect(id){
   const c=cacheCustomers.find(x=>x.id===id);if(!c)return;
@@ -1037,12 +1049,14 @@ function acSelect(id){
 // BILLING
 // ══════════════════════════════════════════
 let billItems=[];
-function initBilling(){
+async function initBilling(){
   const sel=document.getElementById('bill-prod');
   sel.innerHTML='<option value="">— Choose product —</option>';
   cacheItems.forEach(i=>{const o=document.createElement('option');o.value=i.id;o.textContent=`${i.name} (Stock: ${i.stock})`;o.dataset.price=i.price;o.dataset.gst=i.gst||0;o.dataset.stock=i.stock;o.dataset.name=i.name;sel.appendChild(o);});
   document.getElementById('bill-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('bill-num').value='INV-'+String(cacheBills.length+1).padStart(5,'0');
+  // Bill number from Firebase counter
+  const next=billCounter+1;
+  document.getElementById('bill-num').value='INV-'+String(next).padStart(5,'0');
 }
 function onProdSel(){
   const sel=document.getElementById('bill-prod'),opt=sel.options[sel.selectedIndex];
@@ -1066,27 +1080,22 @@ function addItem(){
   renderBillItems();
   sel.value='';document.getElementById('prod-info').style.display='none';
   document.getElementById('bill-qty').value=1;document.getElementById('bill-unit').value='';
-  toast('Item added ✓');
+  toast('Added ✓');
 }
 function remItem(i){billItems.splice(i,1);renderBillItems();}
-function updQty(i,delta){
-  billItems[i].qty=Math.max(1,billItems[i].qty+delta);
-  renderBillItems();
-}
+function updQty(i,delta){billItems[i].qty=Math.max(1,billItems[i].qty+delta);renderBillItems();}
+function setQty(i,v){billItems[i].qty=Math.max(1,parseInt(v)||1);renderBillItems();}
 function renderBillItems(){
   const container=document.getElementById('bill-items-body');
   document.getElementById('bill-item-count').textContent=billItems.length;
-  if(!billItems.length){
-    container.innerHTML='<div class="empty"><div class="empty-icon">🛒</div><p>No items added yet</p></div>';
-    updTotals(0,0);return;
-  }
+  if(!billItems.length){container.innerHTML='<div class="empty"><div class="empty-ico">🛒</div><p>No items added</p></div>';updTotals(0,0);return;}
   let sub=0,tax=0;
   container.innerHTML=billItems.map((item,i)=>{
     const lb=item.price*item.qty,ta=lb*(item.gst/100),lt=lb+ta;sub+=lb;tax+=ta;
     return`<div class="bill-item-card">
       <div class="bic-name">${esc(item.name)}</div>
       <div class="bic-row">
-        <span class="bic-price">₹${fmt(item.price)} × </span>
+        <span class="bic-price">₹${fmt(item.price)} ×</span>
         <div class="qty-ctrl">
           <button class="qty-btn" onclick="updQty(${i},-1)">−</button>
           <input class="qty-val" type="number" value="${item.qty}" min="1" onchange="setQty(${i},this.value)">
@@ -1100,13 +1109,8 @@ function renderBillItems(){
   }).join('');
   updTotals(sub,tax);
 }
-function setQty(i,v){billItems[i].qty=Math.max(1,parseInt(v)||1);renderBillItems();}
-function updTotals(sub,tax){
-  const g=sub+tax;
-  document.getElementById('b-sub').textContent='₹'+fmt(sub);
-  document.getElementById('b-tax').textContent='₹'+fmt(tax);
-  document.getElementById('b-grand').textContent='₹'+fmt(g);
-}
+function updTotals(sub,tax){const g=sub+tax;document.getElementById('b-sub').textContent='₹'+fmt(sub);document.getElementById('b-tax').textContent='₹'+fmt(tax);document.getElementById('b-grand').textContent='₹'+fmt(g);}
+
 async function finalizeBill(){
   const customer=document.getElementById('bill-cust').value.trim();
   const date=document.getElementById('bill-date').value;
@@ -1119,9 +1123,13 @@ async function finalizeBill(){
   const soldItems=billItems.map(item=>{const lb=item.price*item.qty,ta=lb*(item.gst/100);sub+=lb;totalGst+=ta;return{...item,lineBase:lb,gstAmt:ta,lineTotal:lb+ta};});
   const grandTotal=sub+totalGst;
   toast('Saving…','info');
-  const billId=await dbPush('bills',{customer,custId,date,billNumber,payment,items:soldItems,subtotal:sub,totalGst,grandTotal});
+  // Increment bill counter atomically
+  const newCounter=billCounter+1;
+  await dbSetVal('meta/billCounter',newCounter);
+  billCounter=newCounter;
+  const billId=await dbPush('bills',{customer,custId,date,billNumber,payment,items:soldItems,subtotal:sub,totalGst,grandTotal,status:'pending'});
   for(const item of billItems){const prod=cacheItems.find(p=>p.id===item.productId);if(prod){const ns=Math.max(0,prod.stock-item.qty);await dbSet('items/'+item.productId,{stock:ns});prod.stock=ns;}}
-  const billObj={id:billId,customer,custId,date,billNumber,payment,items:soldItems,subtotal:sub,totalGst,grandTotal,createdAt:Date.now()};
+  const billObj={id:billId,customer,custId,date,billNumber,payment,items:soldItems,subtotal:sub,totalGst,grandTotal,status:'pending',createdAt:Date.now()};
   cacheBills.unshift(billObj);
   toast('Bill saved! ₹'+fmt(grandTotal));
   clearBill();
@@ -1138,23 +1146,23 @@ function clearBill(){
 // ══════════════════════════════════════════
 // STOCK
 // ══════════════════════════════════════════
+const CAT_ICONS={'Grains':'🌾','Pulses':'🫘','Oils':'🫙','Sweeteners':'🍬','Spices':'🌶️','Cables':'🔌','Switchgear':'⚡','Distribution':'📋','Accessories':'🔧','Conduits':'📐','General':'📦'};
 function renderStock(){
   const q=(document.getElementById('stock-search').value||'').toLowerCase();
   const f=cacheItems.filter(i=>i.name.toLowerCase().includes(q)||i.category.toLowerCase().includes(q));
   const list=document.getElementById('stock-list');
-  if(!f.length){list.innerHTML='<div class="empty"><div class="empty-icon">📦</div><p>No products</p></div>';return;}
-  const cats={'Grains':'🌾','Pulses':'🫘','Oils':'🫙','Sweeteners':'🍬','Spices':'🌶️','Cables':'🔌','Switchgear':'⚡','Distribution':'📋','Accessories':'🔧','Conduits':'📐'};
+  if(!f.length){list.innerHTML='<div class="empty"><div class="empty-ico">📦</div><p>No products found</p></div>';return;}
   list.innerHTML=f.map(item=>{
     const st=item.stock===0?'<span class="badge bg-red">Out</span>':item.stock<=10?'<span class="badge bg-amber">Low</span>':'<span class="badge bg-green">OK</span>';
-    const icon=cats[item.category]||'📦';
+    const ico=CAT_ICONS[item.category]||'📦';
     return`<div class="stock-item">
-      <div class="si-icon">${icon}</div>
-      <div class="si-info"><div class="si-name">${esc(item.name)}</div><div class="si-cat">${esc(item.category)} · GST ${item.gst||0}%</div></div>
+      <div class="si-ico">${ico}</div>
+      <div class="si-info"><div class="si-name">${highlight(item.name,q)}</div><div class="si-cat">${esc(item.category)} · GST ${item.gst||0}%</div></div>
       <div class="si-right">
         <div class="si-price">₹${fmt(item.price)}</div>
-        <div class="si-stock">${st}</div>
+        <div style="margin-top:3px">${st}</div>
         <div class="si-actions">
-          <input type="number" value="${item.stock}" min="0" style="width:56px;padding:4px 6px;border:1.5px solid var(--line);border-radius:6px;font-size:12px;text-align:center;font-family:'DM Mono',monospace" onchange="updStock('${item.id}',this.value)">
+          <input type="number" value="${item.stock}" min="0" class="qty-input" onchange="updStock('${item.id}',this.value)">
           <button class="btn btn-ghost btn-icon" onclick="editProd('${item.id}')">✏️</button>
           <button class="btn btn-danger btn-icon" onclick="delProd('${item.id}')">🗑</button>
         </div>
@@ -1188,35 +1196,91 @@ async function saveProd(){
   closeModal('modal-prod');renderStock();
 }
 async function delProd(id){if(!confirm('Delete product?'))return;await dbDel('items/'+id);cacheItems=cacheItems.filter(i=>i.id!==id);toast('Deleted');renderStock();}
-async function updStock(id,val){const item=cacheItems.find(i=>i.id===id);if(!item)return;item.stock=parseInt(val)||0;await dbSet('items/'+id,{stock:item.stock});toast('Stock updated');renderStock();}
+async function updStock(id,val){const item=cacheItems.find(i=>i.id===id);if(!item)return;item.stock=parseInt(val)||0;await dbSet('items/'+id,{stock:item.stock});toast('Stock updated');}
 
 // ══════════════════════════════════════════
-// HISTORY
+// HISTORY + SWIPE TO DELETE + STATUS
 // ══════════════════════════════════════════
 function renderHistory(){
   const q=(document.getElementById('hist-search').value||'').toLowerCase();
   const f=cacheBills.filter(b=>b.customer.toLowerCase().includes(q)||b.date.includes(q)||(b.billNumber||'').toLowerCase().includes(q));
   document.getElementById('hist-count').textContent=f.length+' bills';
   const list=document.getElementById('hist-list');
-  if(!f.length){list.innerHTML='<div class="empty"><div class="empty-icon">🕓</div><p>No bills found</p></div>';return;}
-  list.innerHTML=f.map(b=>`
-    <div class="hist-card">
-      <div class="hc-top">
-        <div><div class="hc-name">${esc(b.customer)}</div><div class="hc-inv">${b.billNumber||''} · ${b.date}</div></div>
-        <div><div class="hc-amount">₹${fmt(b.grandTotal)}</div><div class="hc-gst">GST ₹${fmt(b.totalGst||0)}</div></div>
-      </div>
-      <div class="hc-bottom">
-        <div class="hc-meta">${b.items.length} item${b.items.length!==1?'s':''} · ${b.payment||'Cash'}</div>
-        <div class="hc-actions">
-          <button class="btn btn-ghost btn-sm" onclick="openPreview(null,'${b.id}')">🖨 Print</button>
-          <button class="btn btn-warning btn-sm" onclick="openEditBill('${b.id}')">✏️</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteBill('${b.id}')">🗑</button>
+  if(!f.length){list.innerHTML='<div class="empty"><div class="empty-ico">🕓</div><p>No bills found</p></div>';return;}
+  list.innerHTML=f.map(b=>{
+    const status=b.status||'pending';
+    return`<div class="hist-wrap" id="hw-${b.id}">
+      <div class="hist-delete-bg"><span>🗑</span>Delete</div>
+      <div class="hist-card" id="hc-${b.id}">
+        <div class="hc-top">
+          <div class="hc-left">
+            <div class="hc-name">${highlight(b.customer,q)}</div>
+            <div class="hc-inv">${b.billNumber||''} · ${b.date}</div>
+          </div>
+          <div class="hc-right">
+            <div class="hc-amount">₹${fmt(b.grandTotal)}</div>
+            <div class="hc-gst">GST ₹${fmt(b.totalGst||0)}</div>
+          </div>
+        </div>
+        <div class="hc-bottom">
+          <div class="hc-meta">${b.items.length} item${b.items.length!==1?'s':''} · ${b.payment||'Cash'}</div>
+          <div class="hc-actions">
+            <select class="status-select status-${status}" onchange="updateBillStatus('${b.id}',this.value)">
+              <option value="pending" ${status==='pending'?'selected':''}>⏳ Pending</option>
+              <option value="paid" ${status==='paid'?'selected':''}>✅ Paid</option>
+              <option value="cancelled" ${status==='cancelled'?'selected':''}>❌ Cancelled</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="openPreview(null,'${b.id}')">🖨</button>
+            <button class="btn btn-warning btn-sm" onclick="openEditBill('${b.id}')">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteBill('${b.id}')">🗑</button>
+          </div>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
+
+  // Attach swipe listeners
+  f.forEach(b=>initSwipe('hc-'+b.id,'hw-'+b.id,()=>deleteBill(b.id)));
 }
+
+function initSwipe(cardId,wrapId,onDelete){
+  const card=document.getElementById(cardId);
+  if(!card)return;
+  let startX=0,curX=0,swiping=false;
+  card.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;swiping=true;},{passive:true});
+  card.addEventListener('touchmove',e=>{
+    if(!swiping)return;
+    curX=e.touches[0].clientX-startX;
+    if(curX>0)curX=0;
+    if(curX<-80)curX=-80;
+    card.style.transform=`translateX(${curX}px)`;
+  },{passive:true});
+  card.addEventListener('touchend',()=>{
+    swiping=false;
+    if(curX<-50){card.style.transform='translateX(-80px)';}
+    else{card.style.transform='translateX(0)';}
+    curX=0;
+  });
+  // Tap on delete bg
+  const wrap=document.getElementById(wrapId);
+  if(wrap){
+    const bg=wrap.querySelector('.hist-delete-bg');
+    if(bg)bg.addEventListener('click',onDelete);
+  }
+}
+
+async function updateBillStatus(id,status){
+  await dbSet('bills/'+id,{status});
+  const idx=cacheBills.findIndex(b=>b.id===id);
+  if(idx>=0)cacheBills[idx].status=status;
+  // Update the select style
+  const sel=document.querySelector(`#hc-${id} .status-select`);
+  if(sel){sel.className=`status-select status-${status}`;}
+  toast('Status updated');
+}
+
 async function deleteBill(id){
-  if(!confirm('Delete this bill?'))return;
+  if(!confirm('Delete this bill permanently?'))return;
   await dbDel('bills/'+id);
   cacheBills=cacheBills.filter(b=>b.id!==id);
   toast('Bill deleted');renderHistory();
@@ -1234,20 +1298,19 @@ function openEditBill(id){
   document.getElementById('eb-date').value=bill.date;
   document.getElementById('eb-pay').value=bill.payment||'Cash';
   ebItems=bill.items.map(i=>({...i}));
-  renderEbItems();
-  openModal('modal-edit-bill');
+  renderEbItems();openModal('modal-edit-bill');
 }
 function renderEbItems(){
   let sub=0,tax=0;
-  document.getElementById('eb-items').innerHTML=ebItems.map((item,i)=>{
+  document.getElementById('eb-items').innerHTML=ebItems.length?ebItems.map((item,i)=>{
     const lb=item.price*(item.qty||1),ta=lb*((item.gst||0)/100),lt=lb+ta;sub+=lb;tax+=ta;
-    return`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)">
-      <div style="flex:1;font-size:13px;font-weight:500">${esc(item.name)}</div>
+    return`<div style="display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)">
+      <div style="flex:1;font-size:13px;font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(item.name)}</div>
       <div class="qty-ctrl"><button class="qty-btn" onclick="ebUpd(${i},-1)">−</button><input class="qty-val" type="number" value="${item.qty}" min="1" onchange="ebSet(${i},this.value)"><button class="qty-btn" onclick="ebUpd(${i},1)">+</button></div>
-      <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--ts);width:72px;text-align:right">₹${fmt(lt)}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--ts);width:70px;text-align:right;flex-shrink:0">₹${fmt(lt)}</div>
       <button class="btn btn-danger btn-icon" onclick="ebRem(${i})">✕</button>
     </div>`;
-  }).join('');
+  }).join(''):'<div style="padding:12px;text-align:center;color:var(--sl);font-size:13px">No items</div>';
   document.getElementById('eb-sub').textContent='₹'+fmt(sub);
   document.getElementById('eb-gtax').textContent='₹'+fmt(tax);
   document.getElementById('eb-grand').textContent='₹'+fmt(sub+tax);
@@ -1258,8 +1321,8 @@ function ebRem(i){ebItems.splice(i,1);renderEbItems();}
 async function saveEditBill(){
   const id=document.getElementById('eb-id').value;
   const customer=document.getElementById('eb-cust').value.trim();
-  if(!customer){toast('Customer name required','error');return;}
-  if(!ebItems.length){toast('Bill must have at least one item','error');return;}
+  if(!customer){toast('Customer required','error');return;}
+  if(!ebItems.length){toast('Need at least one item','error');return;}
   let sub=0,totalGst=0;
   const updItems=ebItems.map(item=>{const lb=item.price*item.qty,ta=lb*((item.gst||0)/100);sub+=lb;totalGst+=ta;return{...item,lineBase:lb,gstAmt:ta,lineTotal:lb+ta};});
   const grandTotal=sub+totalGst;
@@ -1267,8 +1330,7 @@ async function saveEditBill(){
   await dbSet('bills/'+id,updated);
   const idx=cacheBills.findIndex(b=>b.id===id);
   if(idx>=0)cacheBills[idx]={...cacheBills[idx],...updated};
-  toast('Bill updated ✓');
-  closeModal('modal-edit-bill');renderHistory();
+  toast('Bill updated ✓');closeModal('modal-edit-bill');renderHistory();
 }
 
 // ══════════════════════════════════════════
@@ -1341,6 +1403,12 @@ function buildPP(bill,label){
 // ══════════════════════════════════════════
 function fmt(n){return(parseFloat(n)||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+function highlight(text,q){
+  if(!q)return esc(text);
+  const escaped=esc(text);
+  const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+  return escaped.replace(re,'<mark>$1</mark>');
+}
 function n2w(n){
   if(!n)return'Zero Rupees Only';
   const ones=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
@@ -1349,8 +1417,8 @@ function n2w(n){
   const ip=Math.floor(n),dp=Math.round((n-ip)*100);
   return c(ip).trim()+' Rupees'+(dp?' and '+c(dp).trim()+' Paise':'')+' Only';
 }
+
 init();
 </script>
 </body>
 </html>
-
