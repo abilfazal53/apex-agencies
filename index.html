@@ -6,6 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Apex Agencies</title>
+<meta name="theme-color" content="#0f1f3d">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Apex Agencies">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQXBleCBBZ2VuY2llcyIsInNob3J0X25hbWUiOiJBcGV4IiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJzdGFydF91cmwiOiIuLyIsImJhY2tncm91bmRfY29sb3IiOiIjMGYxZjNkIiwidGhlbWVfY29sb3IiOiIjMGYxZjNkIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIQnlaWE5sY25abFFYTndaV04wVW1GMGFXODlJbmhOYVc1WlRXbHVJRzFsWlhRaUlIWnBaWGRDYjNnOUlqQWdNQ0F5NTBBZ01qVXdJajQ4Y0dGMGFDQm1hV3hzUFNJak1HWXhaamhtSWlCa1BTSkNURnhCUkdWMlZRPT0iLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
@@ -393,39 +398,123 @@ mark{background:#fef08a;color:inherit;border-radius:2px;padding:0 1px}
 
 /* ══ PRINT ══ */
 @media print{
-  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body,html{margin:0;padding:0;background:#fff}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;box-sizing:border-box}
+  body,html{margin:0;padding:0;background:#fff;width:210mm}
   #app,#loading,.modal-overlay,#offline-banner,#auth-screen{display:none!important}
-  #print-area{display:block!important}
-  @page{size:A4;margin:10mm 12mm}
-  .pp{font-family:'DM Sans',Arial,sans-serif;font-size:8.5pt;color:#111;page-break-after:always;page-break-inside:avoid}
+  #print-area{display:block!important;margin:0;padding:0}
+
+  @page{
+    size:A4 portrait;
+    margin:0;
+  }
+
+  .pp{
+    width:210mm;
+    height:297mm;
+    padding:12mm 14mm 10mm;
+    position:relative;
+    font-family:'DM Sans',Arial,sans-serif;
+    font-size:9.5pt;
+    color:#111;
+    page-break-after:always;
+    page-break-inside:avoid;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
   .pp:last-child{page-break-after:auto}
-  .pp-ribbon{float:right;background:#111;color:#fff;font-size:6pt;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:2.5pt 8pt;border-radius:2pt;margin-top:-2pt}
-  .pp-head{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:6pt;margin-bottom:8pt;border-bottom:1.5pt solid #111;overflow:hidden}
-  .pp-coname{font-size:16pt;font-weight:700;color:#111;line-height:1.1}
-  .pp-cogstin{font-size:7pt;color:#555;margin-top:2pt;font-family:'DM Mono',monospace}
-  .pp-cosub{font-size:6.5pt;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-top:1pt}
-  .pp-invtitle{font-size:20pt;font-weight:700;color:#111;text-align:right;line-height:1}
-  .pp-invnum{font-size:8pt;color:#555;text-align:right;margin-top:2pt;font-family:'DM Mono',monospace}
-  .pp-two{display:grid;grid-template-columns:1fr 1fr;gap:6pt;margin-bottom:7pt}
-  .pp-blk{border:.5pt solid #ddd;border-radius:2pt;padding:5pt 7pt}
-  .pp-blk .lbl{font-size:6pt;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;display:block;margin-bottom:2pt}
-  .pp-blk .nm{font-size:9.5pt;font-weight:700;color:#111;display:block;margin-bottom:1pt}
-  .pp-blk .row{color:#444;line-height:1.6;font-size:7.5pt}
-  .pp-tbl{width:100%;border-collapse:collapse;margin-bottom:7pt;table-layout:fixed}
-  .pp-tbl thead tr{background:#111}
-  .pp-tbl thead th{color:#fff;padding:4.5pt 6pt;text-align:left;font-size:7pt;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+
+  /* HEADER */
+  .pp-head{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    padding-bottom:7pt;margin-bottom:7pt;border-bottom:2pt solid #2d5be3;
+    flex-shrink:0;
+  }
+  .pp-ribbon{
+    position:absolute;top:12mm;right:14mm;
+    background:#2d5be3;color:#fff;font-size:6.5pt;font-weight:700;
+    letter-spacing:2px;text-transform:uppercase;padding:3pt 10pt;border-radius:2pt;
+  }
+  .pp-coname{font-size:17pt;font-weight:700;color:#0f1f3d;line-height:1.1}
+  .pp-cogstin{font-size:7.5pt;color:#475569;margin-top:3pt;font-family:'DM Mono',monospace}
+  .pp-cosub{font-size:7pt;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;margin-top:2pt}
+  .pp-invtitle{font-size:24pt;font-weight:700;color:#0f1f3d;text-align:right;line-height:1}
+  .pp-invnum{font-size:8.5pt;color:#475569;text-align:right;margin-top:3pt;font-family:'DM Mono',monospace}
+
+  /* BILL TO + DETAILS STRIP */
+  .pp-strip{
+    display:flex;gap:0;margin-bottom:8pt;
+    border:1pt solid #0f1f3d;flex-shrink:0;
+  }
+  .pp-strip-cell{
+    padding:6pt 9pt;flex:1;border-right:1pt solid #0f1f3d;
+  }
+  .pp-strip-cell:last-child{border-right:none}
+  .pp-strip-lbl{font-size:6.5pt;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#64748b;display:block;margin-bottom:3pt}
+  .pp-strip-val{font-size:9pt;font-weight:700;color:#0f1f3d;display:block;margin-bottom:1pt}
+  .pp-strip-sub{font-size:8pt;color:#334155}
+
+  /* ITEMS TABLE */
+  .pp-tbl{
+    width:100%;border-collapse:collapse;
+    flex:1;
+  }
+  .pp-tbl thead tr{background:#0f1f3d}
+  .pp-tbl thead th{
+    color:#fff;padding:5.5pt 7pt;text-align:left;
+    font-size:7.5pt;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+    border:none;
+  }
   .pp-tbl thead th.r{text-align:right}
-  .pp-tbl tbody tr:nth-child(even){background:#f9f9f9}
-  .pp-tbl tbody td{padding:4pt 6pt;border-bottom:.5pt solid #e5e5e5;font-size:8pt}
-  .pp-tbl tbody td.r{text-align:right}
-  .pp-totals{margin-left:auto;width:160pt}
-  .pp-trow{display:flex;justify-content:space-between;padding:2.5pt 0;font-size:8pt;color:#444;border-bottom:.5pt solid #e5e5e5}
-  .pp-tgrand{display:flex;justify-content:space-between;padding:5pt 8pt;background:#111;color:#fff;border-radius:2pt;margin-top:4pt;font-size:10.5pt;font-weight:700}
-  .pp-words{margin-top:4pt;padding:4pt 7pt;border:.5pt solid #ccc;border-radius:2pt;font-size:7.5pt;color:#333;line-height:1.5}
-  .pp-terms{margin-top:4pt;padding:4pt 7pt;border:.5pt solid #ccc;border-radius:2pt;font-size:7.5pt;color:#333}
-  .pp-banner{border-top:.5pt solid #ccc;text-align:center;padding:5pt;font-size:7.5pt;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#444;margin-top:8pt}
-  .pp-note{text-align:center;font-size:6.5pt;color:#aaa;margin-top:3pt}
+  .pp-tbl thead th.c{text-align:center}
+  .pp-tbl tbody tr{border-bottom:.5pt solid #e2e8f0}
+  .pp-tbl tbody tr:nth-child(even){background:#f8fafc}
+  .pp-tbl tbody td{
+    padding:5.5pt 7pt;font-size:8.5pt;color:#1e293b;
+    border-left:.5pt solid #e2e8f0;
+    vertical-align:middle;
+  }
+  .pp-tbl tbody td:first-child{border-left:none;text-align:center;color:#64748b}
+  .pp-tbl tbody td.r{text-align:right;font-family:'DM Mono',monospace}
+  .pp-tbl tbody td.c{text-align:center}
+  /* Empty rows get a fixed height to fill the page */
+  .pp-tbl tbody tr.empty-row td{height:16pt;color:transparent}
+
+  /* BOTTOM SECTION */
+  .pp-bottom{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    margin-top:8pt;flex-shrink:0;gap:12pt;
+  }
+  .pp-bottom-left{flex:1}
+  .pp-words{
+    padding:5pt 8pt;border:1pt solid #0f1f3d;
+    font-size:8pt;color:#1e293b;line-height:1.6;
+  }
+  .pp-words strong{font-size:7pt;text-transform:uppercase;letter-spacing:1px;color:#475569}
+  .pp-terms{
+    margin-top:4pt;padding:5pt 8pt;border:.5pt solid #94a3b8;
+    font-size:7.5pt;color:#475569;
+  }
+  .pp-terms strong{color:#334155}
+
+  /* TOTALS TABLE */
+  .pp-totals{width:160pt;flex-shrink:0}
+  .pp-tot-tbl{width:100%;border-collapse:collapse;border:1pt solid #0f1f3d}
+  .pp-tot-tbl tr td{padding:4pt 8pt;font-size:8.5pt;border-bottom:.5pt solid #e2e8f0}
+  .pp-tot-tbl tr td:first-child{color:#475569;text-transform:uppercase;font-size:7.5pt;font-weight:700;letter-spacing:.5px}
+  .pp-tot-tbl tr td:last-child{text-align:right;font-family:'DM Mono',monospace;font-weight:600}
+  .pp-tot-tbl tr.grand-row{background:#0f1f3d}
+  .pp-tot-tbl tr.grand-row td{color:#fff;font-size:10pt;font-weight:700;border-bottom:none;padding:5pt 8pt}
+
+  /* FOOTER BANNER */
+  .pp-banner{
+    margin-top:8pt;padding:7pt;
+    background:#0f1f3d;color:#fff;
+    text-align:center;font-size:8pt;font-weight:700;
+    letter-spacing:2px;text-transform:uppercase;
+    flex-shrink:0;
+  }
+  .pp-note{text-align:center;font-size:7pt;color:#94a3b8;margin-top:3pt;flex-shrink:0}
 }
 #print-area{display:none}
 
@@ -1456,11 +1545,31 @@ function doPrint(){
   setTimeout(()=>window.print(),200);
 }
 function buildPP(bill,label){
-  const rows=bill.items.map((i,idx)=>`<tr><td>${idx+1}</td><td>${esc(i.name)}</td><td class="r">${i.qty}</td><td class="r">₹${fmt(i.price)}</td><td class="r">₹${fmt(i.lineTotal)}</td></tr>`).join('');
   const words=n2w(bill.grandTotal);
-  const termsHtml=bill.terms?`<div class="pp-terms"><strong>Terms:</strong> ${esc(bill.terms)}</div>`:'';
+  const termsHtml=bill.terms?`<tr class="empty-row"><td colspan="5" style="padding:5pt 7pt;font-size:7.5pt;color:#475569;border-bottom:none"><strong>Terms:</strong> ${esc(bill.terms)}</td></tr>`:'';
+
+  // Build item rows — always 10 rows minimum for full-page look
+  const minRows=10;
+  let itemRows='';
+  for(let i=0;i<Math.max(bill.items.length,minRows);i++){
+    if(i<bill.items.length){
+      const it=bill.items[i];
+      itemRows+=`<tr>
+        <td>${i+1}</td>
+        <td>${esc(it.name)}</td>
+        <td class="c">${it.qty}</td>
+        <td class="c">${esc(it.unit||'Pcs')}</td>
+        <td class="r">₹${fmt(it.price)}</td>
+        <td class="r">₹${fmt(it.lineTotal)}</td>
+      </tr>`;
+    } else {
+      itemRows+=`<tr class="empty-row"><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>`;
+    }
+  }
+
   return`<div class="pp">
   <div class="pp-ribbon">${label}</div>
+
   <div class="pp-head">
     <div>
       <div class="pp-coname">Al Anwar Trading</div>
@@ -1472,21 +1581,58 @@ function buildPP(bill,label){
       <div class="pp-invnum">${esc(bill.billNumber||'—')}</div>
     </div>
   </div>
-  <div class="pp-two">
-    <div class="pp-blk"><span class="lbl">Bill To</span><span class="nm">${esc(bill.customer)}</span><span class="row">India</span></div>
-    <div class="pp-blk"><span class="lbl">Invoice Details</span><span class="row">Date: <strong>${bill.date}</strong><br>Payment Terms: <strong>${esc(bill.payment||'Cash')}</strong></span></div>
+
+  <div class="pp-strip">
+    <div class="pp-strip-cell">
+      <span class="pp-strip-lbl">Bill To</span>
+      <span class="pp-strip-val">${esc(bill.customer)}</span>
+    </div>
+    <div class="pp-strip-cell">
+      <span class="pp-strip-lbl">Date</span>
+      <span class="pp-strip-sub"><strong>${bill.date}</strong></span>
+    </div>
+    <div class="pp-strip-cell">
+      <span class="pp-strip-lbl">Invoice No.</span>
+      <span class="pp-strip-sub" style="font-family:'DM Mono',monospace"><strong>${esc(bill.billNumber||'—')}</strong></span>
+    </div>
+    <div class="pp-strip-cell" style="border-right:none">
+      <span class="pp-strip-lbl">Payment Terms</span>
+      <span class="pp-strip-sub"><strong>${esc(bill.payment||'Cash')}</strong></span>
+    </div>
   </div>
+
   <table class="pp-tbl">
-    <thead><tr><th style="width:20pt">S.No</th><th>Description</th><th class="r" style="width:28pt">Qty</th><th class="r" style="width:48pt">Rate</th><th class="r" style="width:56pt">Amount</th></tr></thead>
-    <tbody>${rows}</tbody>
+    <thead>
+      <tr>
+        <th style="width:30pt">S. No.</th>
+        <th>Description</th>
+        <th class="c" style="width:36pt">Qty</th>
+        <th class="c" style="width:36pt">Unit</th>
+        <th class="r" style="width:54pt">Unit Price</th>
+        <th class="r" style="width:60pt">Line Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${itemRows}
+      ${termsHtml}
+    </tbody>
   </table>
-  <div class="pp-totals">
-    <div class="pp-trow"><span>Subtotal</span><span>₹${fmt(bill.subtotal)}</span></div>
-    <div class="pp-trow"><span>GST</span><span>₹${fmt(bill.totalGst||0)}</span></div>
-    <div class="pp-tgrand"><span>Total</span><span>₹${fmt(bill.grandTotal)}</span></div>
+
+  <div class="pp-bottom">
+    <div class="pp-bottom-left">
+      <div class="pp-words">
+        <strong>Amount in Words</strong><br>${words}
+      </div>
+    </div>
+    <div class="pp-totals">
+      <table class="pp-tot-tbl">
+        <tr><td>Subtotal</td><td>₹${fmt(bill.subtotal)}</td></tr>
+        <tr><td>GST</td><td>₹${fmt(bill.totalGst||0)}</td></tr>
+        <tr class="grand-row"><td>Total</td><td>₹${fmt(bill.grandTotal)}</td></tr>
+      </table>
+    </div>
   </div>
-  <div class="pp-words"><strong>Amount in Words:</strong> ${words}</div>
-  ${termsHtml}
+
   <div class="pp-banner">Thank you for your business!</div>
   <div class="pp-note">Al Anwar Trading · ${label} Copy · ${bill.date}</div>
 </div>`;
