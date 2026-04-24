@@ -825,12 +825,13 @@ mark{background:#fef08a;color:inherit;border-radius:2px;padding:0 1px}
       <div class="form-group"><label class="form-label">Product Name *</label><input class="form-control" id="mp-name" placeholder="e.g. Premium Basmati Rice 5kg"></div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Category *</label><input class="form-control" id="mp-cat"></div>
-        <div class="form-group"><label class="form-label">Price (₹) *</label><input class="form-control" type="number" id="mp-price" min="0" step="0.01"></div>
+        <div class="form-group"><label class="form-label">HSN Code</label><input class="form-control" id="mp-hsn" placeholder="e.g. 1006"></div>
       </div>
       <div class="form-row">
+        <div class="form-group"><label class="form-label">Price (₹) *</label><input class="form-control" type="number" id="mp-price" min="0" step="0.01"></div>
         <div class="form-group"><label class="form-label">GST (%)</label><input class="form-control" type="number" id="mp-gst" min="0" max="100" step="0.1" placeholder="18"></div>
-        <div class="form-group"><label class="form-label">Stock</label><input class="form-control" type="number" id="mp-stock" min="0" placeholder="0"></div>
       </div>
+      <div class="form-group"><label class="form-label">Stock</label><input class="form-control" type="number" id="mp-stock" min="0" placeholder="0"></div>
     </div>
     <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-prod')">Cancel</button><button class="btn btn-primary" onclick="saveProd()">Save Product</button></div>
   </div>
@@ -899,7 +900,7 @@ mark{background:#fef08a;color:inherit;border-radius:2px;padding:0 1px}
     <div class="modal-handle"></div>
     <div class="modal-hd" style="flex-shrink:0"><div class="modal-title" id="preview-title">Invoice Preview</div><button class="modal-close" onclick="closeModal('modal-preview')">×</button></div>
     <div class="a4-scroll" id="a4-scroll"></div>
-    <div class="modal-footer" style="flex-shrink:0"><button class="btn btn-ghost" onclick="closeModal('modal-preview')">Close</button><button class="btn btn-primary" onclick="doPrint()">🖨 Print / Save PDF</button></div>
+    <div class="modal-footer" style="flex-shrink:0"><button class="btn btn-ghost" onclick="closeModal('modal-preview')">Close</button><button class="btn btn-success" onclick="shareCurrentBill()">↗ Share</button><button class="btn btn-primary" onclick="doPrint()">🖨 Print / PDF</button></div>
   </div>
 </div>
 
@@ -908,6 +909,7 @@ mark{background:#fef08a;color:inherit;border-radius:2px;padding:0 1px}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
 // ══════════════════════════════════════════
 // FIREBASE CONFIG
@@ -945,7 +947,15 @@ function dbSetVal(path,val){return rtdb.ref(path).set(val);}
 // ══════════════════════════════════════════
 let cacheItems=[],cacheBills=[],cacheCustomers=[],billCounter=0;
 
+async function signInAnon(){
+  const auth=firebase.auth();
+  if(auth.currentUser)return;
+  await auth.signInAnonymously();
+}
+
 async function loadAll(){
+  setLS('Signing in…');
+  await signInAnon();
   setLS('Loading…');
   [cacheItems,cacheCustomers,cacheBills]=await Promise.all([
     dbRead('items'),dbRead('customers'),dbRead('bills')
@@ -968,6 +978,13 @@ async function init(){
     const connected=snap.val();
     setSyncStatus(connected);
     document.getElementById('offline-banner').className=connected?'':'show';
+  });
+
+  // Keep anonymous session alive on reconnect
+  firebase.auth().onAuthStateChanged(async user=>{
+    if(!user){
+      try{ await firebase.auth().signInAnonymously(); }catch(e){ console.warn('Re-auth failed',e); }
+    }
   });
 
   try{
@@ -1207,7 +1224,7 @@ let billItems=[];
 async function initBilling(){
   const sel=document.getElementById('bill-prod');
   sel.innerHTML='<option value="">— Choose product —</option>';
-  cacheItems.forEach(i=>{const o=document.createElement('option');o.value=i.id;o.textContent=`${i.name} (Stock: ${i.stock})`;o.dataset.price=i.price;o.dataset.gst=i.gst||0;o.dataset.stock=i.stock;o.dataset.name=i.name;sel.appendChild(o);});
+  cacheItems.forEach(i=>{const o=document.createElement('option');o.value=i.id;o.textContent=`${i.name} (Stock: ${i.stock})`;o.dataset.price=i.price;o.dataset.gst=i.gst||0;o.dataset.stock=i.stock;o.dataset.name=i.name;o.dataset.hsn=i.hsn||'';sel.appendChild(o);});
   document.getElementById('bill-date').value=new Date().toISOString().split('T')[0];
   // Bill number from Firebase counter
   const next=billCounter+1;
@@ -1231,7 +1248,7 @@ function addItem(){
   if(qty>avail){toast(`Only ${avail} in stock`,'error');return;}
   const ex=billItems.find(b=>b.productId===opt.value);
   if(ex){if(ex.qty+qty>avail){toast(`Only ${avail} available`,'error');return;}ex.qty+=qty;}
-  else billItems.push({productId:opt.value,name:opt.dataset.name,price:parseFloat(opt.dataset.price),gst:parseFloat(opt.dataset.gst),qty,unit});
+  else billItems.push({productId:opt.value,name:opt.dataset.name,hsn:opt.dataset.hsn||'',price:parseFloat(opt.dataset.price),gst:parseFloat(opt.dataset.gst),qty,unit});
   renderBillItems();
   sel.value='';document.getElementById('prod-info').style.display='none';
   document.getElementById('bill-qty').value=1;document.getElementById('bill-unit').value='';
@@ -1273,6 +1290,7 @@ async function finalizeBill(){
   const payment=document.getElementById('bill-pay').value;
   const custId=document.getElementById('bill-cust').dataset.custId||null;
   const terms=document.getElementById('bill-terms').value.trim();
+  const custGstin=(custId&&cacheCustomers.find(c=>c.id===custId))||null;
   if(!customer){toast('Enter customer name','error');return;}
   if(!billItems.length){toast('Add at least one item','error');return;}
   let sub=0,totalGst=0;
@@ -1283,9 +1301,11 @@ async function finalizeBill(){
   const newCounter=billCounter+1;
   await dbSetVal('meta/billCounter',newCounter);
   billCounter=newCounter;
-  const billId=await dbPush('bills',{customer,custId,date,billNumber,payment,terms,items:soldItems,subtotal:sub,totalGst,grandTotal,status:'pending'});
+  const custGstinVal=custGstin?custGstin.gstin||'':'';
+  const billId=await dbPush('bills',{customer,custId,custGstin:custGstinVal,date,billNumber,payment,terms,items:soldItems,subtotal:sub,totalGst,grandTotal,status:'pending'});
   for(const item of billItems){const prod=cacheItems.find(p=>p.id===item.productId);if(prod){const ns=Math.max(0,prod.stock-item.qty);await dbSet('items/'+item.productId,{stock:ns});prod.stock=ns;}}
-  const billObj={id:billId,customer,custId,date,billNumber,payment,terms,items:soldItems,subtotal:sub,totalGst,grandTotal,status:'pending',createdAt:Date.now()};
+  const custGstinVal2=custGstin?custGstin.gstin||'':'';
+  const billObj={id:billId,customer,custId,custGstin:custGstinVal2,date,billNumber,payment,terms,items:soldItems,subtotal:sub,totalGst,grandTotal,status:'pending',createdAt:Date.now()};
   cacheBills.unshift(billObj);
   toast('Bill saved! ₹'+fmt(grandTotal));
   clearBill();
@@ -1314,7 +1334,7 @@ function renderStock(){
     const ico=CAT_ICONS[item.category]||'📦';
     return`<div class="stock-item">
       <div class="si-ico">${ico}</div>
-      <div class="si-info"><div class="si-name">${highlight(item.name,q)}</div><div class="si-cat">${esc(item.category)} · GST ${item.gst||0}%</div></div>
+      <div class="si-info"><div class="si-name">${highlight(item.name,q)}</div><div class="si-cat">${esc(item.category)} · GST ${item.gst||0}%${item.hsn?' · HSN '+esc(item.hsn):''}</div></div>
       <div class="si-right">
         <div class="si-price">₹${fmt(item.price)}</div>
         <div style="margin-top:3px">${st}</div>
@@ -1327,12 +1347,13 @@ function renderStock(){
     </div>`;
   }).join('');
 }
-function openProdModal(){['mp-id','mp-name','mp-cat','mp-price','mp-gst','mp-stock'].forEach(id=>document.getElementById(id).value='');document.getElementById('prod-modal-title').textContent='Add Product';openModal('modal-prod');}
+function openProdModal(){['mp-id','mp-name','mp-cat','mp-hsn','mp-price','mp-gst','mp-stock'].forEach(id=>document.getElementById(id).value='');document.getElementById('prod-modal-title').textContent='Add Product';openModal('modal-prod');}
 function editProd(id){
   const item=cacheItems.find(i=>i.id===id);if(!item)return;
   document.getElementById('mp-id').value=item.id;
   document.getElementById('mp-name').value=item.name;
   document.getElementById('mp-cat').value=item.category;
+  document.getElementById('mp-hsn').value=item.hsn||'';
   document.getElementById('mp-price').value=item.price;
   document.getElementById('mp-gst').value=item.gst||0;
   document.getElementById('mp-stock').value=item.stock;
@@ -1343,11 +1364,12 @@ async function saveProd(){
   const id=document.getElementById('mp-id').value;
   const name=document.getElementById('mp-name').value.trim();
   const category=document.getElementById('mp-cat').value.trim();
+  const hsn=document.getElementById('mp-hsn').value.trim();
   const price=parseFloat(document.getElementById('mp-price').value);
   const gst=parseFloat(document.getElementById('mp-gst').value)||0;
   const stock=parseInt(document.getElementById('mp-stock').value)||0;
   if(!name||!category||isNaN(price)){toast('Fill required fields','error');return;}
-  const data={name,category,price,gst,stock};
+  const data={name,category,hsn,price,gst,stock};
   if(id){await dbSet('items/'+id,data);const idx=cacheItems.findIndex(i=>i.id===id);if(idx>=0)cacheItems[idx]={...cacheItems[idx],...data};toast('Product updated');}
   else{const newId=await dbPush('items',data);cacheItems.push({id:newId,...data});toast('Product added');}
   closeModal('modal-prod');renderStock();
@@ -1388,6 +1410,7 @@ function renderHistory(){
               <option value="cancelled" ${status==='cancelled'?'selected':''}>❌ Cancelled</option>
             </select>
             <button class="btn btn-ghost btn-sm" onclick="openPreview(null,'${b.id}')">🖨</button>
+            <button class="btn btn-primary btn-sm" onclick="shareBill('${b.id}')">↗ Share</button>
             <button class="btn btn-warning btn-sm" onclick="openEditBill('${b.id}')">✏️</button>
             <button class="btn btn-danger btn-sm" onclick="deleteBill('${b.id}')">🗑</button>
           </div>
@@ -1504,11 +1527,11 @@ function openPreview(bill,id){
   openModal('modal-preview');
 }
 function buildA4(bill,label){
-  const rows=bill.items.map((i,idx)=>`<tr><td style="width:24px">${idx+1}</td><td>${esc(i.name)}</td><td class="r" style="width:36px">${i.qty}</td><td class="r" style="width:58px">₹${fmt(i.price)}</td><td class="r" style="width:66px">₹${fmt(i.lineTotal)}</td></tr>`).join('');
+  const rows=bill.items.map((i,idx)=>`<tr><td style="width:22px">${idx+1}</td><td>${esc(i.name)}${i.hsn?'<br><span style="font-size:8px;color:#888">HSN: '+esc(i.hsn)+'</span>':''}</td><td class="r" style="width:32px">${i.qty}</td><td class="r" style="width:50px">₹${fmt(i.price)}</td><td class="r" style="width:62px">₹${fmt(i.lineTotal)}</td></tr>`).join('');
   const words=n2w(bill.grandTotal);
   const termsHtml=bill.terms?`<div class="a4-terms"><strong>Terms:</strong> ${esc(bill.terms)}</div>`:'';
+  const custGstinLine=bill.custGstin?`<br><span style="font-size:8.5px;color:#555">GSTIN: ${esc(bill.custGstin)}</span>`:'';
   return`<div class="a4-paper">
-  <div class="a4-ribbon">${label}</div>
   <div class="a4-head">
     <div>
       <div class="a4-coname">Al Anwar Trading</div>
@@ -1521,11 +1544,11 @@ function buildA4(bill,label){
     </div>
   </div>
   <div class="a4-blocks">
-    <div class="a4-blk"><span class="lbl">Bill To</span><span class="nm">${esc(bill.customer)}</span><span class="row">India</span></div>
+    <div class="a4-blk"><span class="lbl">Bill To</span><span class="nm">${esc(bill.customer)}</span>${custGstinLine}</div>
     <div class="a4-blk"><span class="lbl">Invoice Details</span><span class="row">Date: <strong>${bill.date}</strong><br>Payment Terms: <strong>${esc(bill.payment||'Cash')}</strong></span></div>
   </div>
   <table class="a4-tbl">
-    <thead><tr><th style="width:24px">S.No</th><th>Description</th><th class="r" style="width:36px">Qty</th><th class="r" style="width:58px">Rate</th><th class="r" style="width:66px">Amount</th></tr></thead>
+    <thead><tr><th style="width:22px">S.No</th><th>Description</th><th class="r" style="width:32px">Qty</th><th class="r" style="width:50px">Rate</th><th class="r" style="width:62px">Amount</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>
   <div class="a4-totals">
@@ -1539,6 +1562,58 @@ function buildA4(bill,label){
   <div class="a4-fnote">Al Anwar Trading · ${label} Copy · ${bill.date}</div>
 </div>`;
 }
+// ══════════════════════════════════════════
+// SHARE BILL
+// ══════════════════════════════════════════
+function buildShareText(bill){
+  const lines=[];
+  lines.push('*Al Anwar Trading*');
+  lines.push('GSTIN: 08ITNPK7743E1Z5');
+  lines.push('');
+  lines.push(`*Invoice: ${bill.billNumber||'—'}*`);
+  lines.push(`Date: ${bill.date}`);
+  lines.push(`Bill To: ${bill.customer}${bill.custGstin?' | GSTIN: '+bill.custGstin:''}`);
+  lines.push(`Payment: ${bill.payment||'Cash'}`);
+  lines.push('');
+  lines.push('*Items:*');
+  bill.items.forEach((it,i)=>{
+    lines.push(`${i+1}. ${it.name}${it.hsn?' (HSN: '+it.hsn+')':''}`);
+    lines.push(`   Qty: ${it.qty} ${it.unit||'Pcs'} × ₹${fmt(it.price)} = ₹${fmt(it.lineTotal)}`);
+  });
+  lines.push('');
+  lines.push(`Subtotal: ₹${fmt(bill.subtotal)}`);
+  lines.push(`GST: ₹${fmt(bill.totalGst||0)}`);
+  lines.push(`*Total: ₹${fmt(bill.grandTotal)}*`);
+  if(bill.terms)lines.push(`Terms: ${bill.terms}`);
+  lines.push('');
+  lines.push('Thank you for your business!');
+  return lines.join('\n');
+}
+
+async function shareBill(id){
+  const bill=cacheBills.find(b=>b.id===id);
+  if(!bill)return;
+  const text=buildShareText(bill);
+  if(navigator.share){
+    try{
+      await navigator.share({title:`Invoice ${bill.billNumber||''} - Al Anwar Trading`,text});
+      return;
+    }catch(e){if(e.name!=='AbortError')console.warn(e);}
+  }
+  // Fallback: copy to clipboard
+  try{
+    await navigator.clipboard.writeText(text);
+    toast('Bill text copied to clipboard — paste in WhatsApp ✓');
+  }catch(e){
+    toast('Share not supported on this browser','error');
+  }
+}
+
+async function shareCurrentBill(){
+  if(!curBill)return;
+  await shareBill(curBill.id);
+}
+
 function doPrint(){
   if(!curBill)return;
   document.getElementById('print-area').innerHTML=buildPP(curBill,'ORIGINAL')+buildPP(curBill,'DUPLICATE');
@@ -1568,8 +1643,6 @@ function buildPP(bill,label){
   }
 
   return`<div class="pp">
-  <div class="pp-ribbon">${label}</div>
-
   <div class="pp-head">
     <div>
       <div class="pp-coname">Al Anwar Trading</div>
